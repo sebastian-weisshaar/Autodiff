@@ -72,4 +72,12 @@ def tanh(node):
     back_deriv = {node.name: ((1/np.cosh(node.value))**2)}
     new_node = Node(new_name, np.tanh(node.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[node])
     node.child.append(new_node)
-    return new_node 
+    return new_node  
+
+def sqrt(node):
+    new_name = node.name + 1
+    for_deriv = ((1/2)*node.value**(-1/2))*node.for_deriv
+    back_deriv = {node.name: ((1/2)*node.value**(-1/2))}
+    new_node = Node(new_name, np.sqrt(node.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[node])
+    node.child.append(new_node)
+    return new_node  
