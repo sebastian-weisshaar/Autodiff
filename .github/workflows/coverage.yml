@@ -28,6 +28,10 @@ jobs:
         run: pip install pytest pytest-cov
       - name: Run complex number test suite
         run: pytest --cov-report=html:tests/htmlcov --cov=tests/
+      - name: Commit changes to tests
+        run: |
+          git add tests/*
+          git commit -m 'New test files'
       
        
 
