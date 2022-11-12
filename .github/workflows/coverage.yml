@@ -27,7 +27,8 @@ jobs:
       - name: Install Python dependencies
         run: pip install pytest pytest-cov
       - name: Run complex number test suite
-        run: pytest --cov-report term --cov=tests/
+        run: pytest --cov-report=html:tests/htmlcov --cov=tests/
+      
        
 
 
