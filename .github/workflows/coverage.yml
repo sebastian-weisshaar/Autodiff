@@ -27,7 +27,7 @@ jobs:
 
       - name: Test coverage of 90%
         run: pytest --cov=tests/ --cov-fail-under=90
-      -name : Print all
+      - name : Print all
         run: cat src/autodiff/autodiff.py
     
       
