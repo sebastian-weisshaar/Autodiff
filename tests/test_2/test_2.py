@@ -8,4 +8,4 @@ def empty(y):
     return y+4
 
 def test_1():
-    assert f(2)==3
+    assert f(2)==6
