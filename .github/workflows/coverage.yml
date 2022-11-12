@@ -25,7 +25,9 @@ jobs:
         with:
           python-version: '3.10' # let's use a recent version
       - name: Install Python dependencies
-        run: pip install pytest 
+        run: pip install pytest pytest-cov
       - name: Run complex number test suite
-        run: pytest homework/hw4/
+        run: pytest --cov-report=html:tests/htmlcov  --cov=tests/
+
+
         
