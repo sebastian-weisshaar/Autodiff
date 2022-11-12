@@ -30,6 +30,8 @@ jobs:
         run: pytest --cov-report=html:tests/htmlcov --cov=tests/
       - name: Commit changes to tests
         run: |
+          git config --global user.email "sebastian@g.harvard.edu"
+          git config --global user.name "Sebastian Weisshaar"
           git add tests/*
           git commit -m 'New test files'
       
