@@ -15,26 +15,17 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: [ self-hosted ]
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  test_complex:
+    name: Test Python implementation of complex numbers
+    runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # Install dependencies
-      - name: Install dependencies
-        run: pip install pytest pytest-cov
       
-      # Run simple test
-      - name: Run test and output coverage
-        run: pytest --cov-report=html:tests/htmlcov  --cov=tests/
-
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10' # let's use a recent version
+      - name: Install Python dependencies
+        run: pip install pytest 
+      - name: Run complex number test suite
+        run: pytest homework/hw4/
+        
