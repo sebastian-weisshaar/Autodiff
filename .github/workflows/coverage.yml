@@ -27,7 +27,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install pytest pytest-cov
       - name: Run complex number test suite
-        run: pytest --cov-report=html:tests/htmlcov --cov=tests/ pytest --cov-fail-under=40
+        run: pytest --cov-fail-under=40 --cov=tests/ 
       - name: Commit changes to tests
         run: |
           git config --global user.email "sebastian@g.harvard.edu"
