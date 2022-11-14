@@ -79,6 +79,17 @@ def tan(var):
         raise TypeError
 
 def arcsin(node):
+    """Arcsin Operator
+
+    INPUT
+    =======
+    var: a real number or Node object
+    
+    RETURNS
+    =======
+    output: a real number or new node object after taking the Arcsin
+
+    """
     if isinstance(node, Node):
         new_name = node.name + 1
         for_deriv = (1/np.sqrt(1-(node.value)**2))*node.for_deriv
@@ -92,6 +103,17 @@ def arcsin(node):
         raise TypeError
 
 def arcos(var):
+    """Arcos Operator
+
+    INPUT
+    =======
+    var: a real number or Node object
+    
+    RETURNS
+    =======
+    output: a real number or new node object after taking the Arcos
+
+    """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = (-1/np.sqrt(1-(var.value)**2))*var.for_deriv
@@ -106,6 +128,17 @@ def arcos(var):
 
 
 def artan(var):
+    """Arctan Operator
+
+    INPUT
+    =======
+    var: a real number or Node object
+    
+    RETURNS
+    =======
+    output: a real number or new node object after taking the Arctan
+
+    """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = (1/(1+(var.value)**2))*var.for_deriv
@@ -119,6 +152,17 @@ def artan(var):
         raise TypeError
 
 def sinh(node):
+    """Sinh Operator
+
+    INPUT
+    =======
+    var: a real number or Node object
+    
+    RETURNS
+    =======
+    output: a real number or new node object after taking the Sinh
+
+    """
     if isinstance(node, Node):
         new_name = node.name + 1
         for_deriv = np.cosh(node.value)*node.for_deriv
@@ -132,6 +176,17 @@ def sinh(node):
         raise TypeError
 
 def cosh(var):
+    """Cosh Operator
+
+    INPUT
+    =======
+    var: a real number or Node object
+    
+    RETURNS
+    =======
+    output: a real number or new node object after taking the Cosh
+
+    """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = np.sinh(var.value)*var.for_deriv
@@ -145,6 +200,17 @@ def cosh(var):
         raise TypeError
 
 def tanh(var):
+    """Tanh Operator
+
+    INPUT
+    =======
+    var: a real number or Node object
+    
+    RETURNS
+    =======
+    output: a real number or new node object after taking the Tanh
+
+    """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = ((1/np.cosh(var.value))**2)*var.for_deriv
@@ -158,6 +224,17 @@ def tanh(var):
         raise TypeError
 
 def sqrt(var):
+    """Square Root Operator
+
+    INPUT
+    =======
+    var: a real number or Node object
+    
+    RETURNS
+    =======
+    output: a real number or new node object after taking the Square Root
+
+    """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = ((1/2)*var.value**(-1/2))*var.for_deriv
@@ -171,6 +248,19 @@ def sqrt(var):
         raise TypeError
 
 def exp(var, base = np.e):
+    """Square Root Operator
+
+    INPUT
+    =======
+    var: a real number or Node object
+    base: the base of the exponential function (default base is e)
+    
+    RETURNS
+    =======
+    output: a real number or new node object after taking the exponential 
+
+    """
+    
     if base <= 0:
         raise TypeError
     if isinstance(var, Node):
@@ -186,6 +276,18 @@ def exp(var, base = np.e):
         raise TypeError
 
 def log(var, base = np.e):
+    """Logarithm Operator
+
+    INPUT
+    =======
+    var: a real number or Node object
+    base: the base of the Logarithm (default base is e)
+    
+    RETURNS
+    =======
+    output: a real number or new node object after taking the Logarithm
+
+    """
     if base <= 0:
         raise TypeError
     if isinstance(var, Node):
@@ -201,6 +303,17 @@ def log(var, base = np.e):
         raise TypeError
 
 def sigmoid(var):
+    """Sigmoid Operator (i.e 1/(1 + e^{-var}))
+
+    INPUT
+    =======
+    var: a real number or Node object
+    
+    RETURNS
+    =======
+    output: a real number or new node object after taking the Sigmoid
+
+    """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = ((np.exp(-var.value))/((np.exp(-var.value)+1)**2))*var.for_deriv
