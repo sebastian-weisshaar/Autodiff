@@ -1,36 +1,39 @@
-# This is a basic workflow to help you get started with Actions
-
+# Workflow to check for coverage of code
 name: coverage
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+  # Workflow should run on test_suite pushes
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
+    branches: [ test_suite ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: [ self-hosted ]
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  test_package:
+    name: Test Python implementation of complex numbers
+    runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      
       - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10' 
+      - name: Install Python dependencies
+        run: pip install pytest pytest-cov numpy
+      - name : Print all
+        run: pwd
+      - name: show files
+        run: ls -al
+      - name: set pythonpath
+        run: export PYTHONPATH=/opt/github-runner/code1/_work/team19/team19/src
+      - name: Test coverage of 90%
+        run: pytest --cov=tests/ --cov-fail-under=90
+      
+    
+      
+       
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+        
