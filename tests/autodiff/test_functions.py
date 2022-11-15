@@ -1,4 +1,4 @@
-from autodiff.functions.py import sin
+from functions import sin
 import numpy as np
 
 def test_sin():
