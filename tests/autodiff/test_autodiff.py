@@ -1,4 +1,4 @@
-from autodiff.autodiff.py import Autodiff
+from autodiff import Autodiff
 
 
 
