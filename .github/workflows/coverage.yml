@@ -26,6 +26,8 @@ jobs:
         run: pwd
       - name: show files
         run: ls -al
+      - name: set pythonpath
+        run: export PYTHONPATH=/opt/github-runner/code1/_work/team19/team19/src
       - name: Test coverage of 90%
         run: pytest --cov=tests/ --cov-fail-under=90
       
