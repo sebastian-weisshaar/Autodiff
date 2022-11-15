@@ -29,6 +29,8 @@ jobs:
         run: pytest --cov=tests/ --cov-fail-under=90
       - name : Print all
         run: pwd
+      - name: show files
+        run: ls -al
     
       
        
