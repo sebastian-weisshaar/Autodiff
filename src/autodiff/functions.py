@@ -25,7 +25,7 @@ def sin(var):
         new_node = Node(new_name, np.sin(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return np.sin(var)
     else:
         raise TypeError   
@@ -49,7 +49,7 @@ def cos(var):
         new_node = Node(new_name, np.cos(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node 
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return np.cos(var)
     else:
         raise TypeError
@@ -73,7 +73,7 @@ def tan(var):
         new_node = Node(new_name, np.tan(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node 
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return np.tan(var)
     else:
         raise TypeError
@@ -97,7 +97,7 @@ def arcsin(node):
         new_node = Node(new_name, np.arcsin(node.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[node])
         node.child.append(new_node)
         return new_node 
-    elif ((type(node) == int) | (type(node) == float)):
+    elif isinstance(var, (int, float)):
         return np.arcsin(node)
     else:
         raise TypeError
@@ -121,7 +121,7 @@ def arcos(var):
         new_node = Node(new_name, np.arccos(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node 
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return np.arccos(var)
     else:
         raise TypeError
@@ -146,7 +146,7 @@ def artan(var):
         new_node = Node(new_name, np.arctan(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node 
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return np.arctan(var)
     else:
         raise TypeError
@@ -170,7 +170,7 @@ def sinh(node):
         new_node = Node(new_name, np.sinh(node.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[node])
         node.child.append(new_node)
         return new_node 
-    elif ((type(node) == int) | (type(node) == float)):
+    elif isinstance(var, (int, float)):
         return np.sinh(node)
     else:
         raise TypeError
@@ -194,7 +194,7 @@ def cosh(var):
         new_node = Node(new_name, np.cosh(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node 
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return np.cosh(var)
     else:
         raise TypeError
@@ -218,7 +218,7 @@ def tanh(var):
         new_node = Node(new_name, np.tanh(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node  
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return np.tanh(var)
     else:
         raise TypeError
@@ -242,7 +242,7 @@ def sqrt(var):
         new_node = Node(new_name, np.sqrt(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node 
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return np.sqrt(var)
     else:
         raise TypeError
@@ -270,7 +270,7 @@ def exp(var, base = np.e):
         new_node = Node(new_name, base**(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node 
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return base**var
     else:
         raise TypeError
@@ -297,7 +297,7 @@ def log(var, base = np.e):
         new_node = Node(new_name, np.log(var.value)/np.log(base), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node 
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return np.log(var)/np.log(base)
     else:
         raise TypeError
@@ -321,7 +321,7 @@ def sigmoid(var):
         new_node = Node(new_name, 1/(1+np.exp(-var.value)), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
         var.child.append(new_node)
         return new_node 
-    elif ((type(var) == int) | (type(var) == float)):
+    elif isinstance(var, (int, float)):
         return 1/(1+np.exp(-var))
     else:
         raise TypeError
