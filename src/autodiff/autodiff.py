@@ -1,10 +1,29 @@
-# TODO: add docstrings to all classes and functions
 class AutoDiff:
+    """
+    Autodiff class, for computing automatic derivatives of functions
+
+    ...
+
+    Attributes
+    ----------
+    f : function
+        f(x) - the function of interest
+    input_parameters: list
+        x - list of the values of the independent variable x
+    seed: list
+        seed vector
+
+    Methods
+    -------
+    forward
+        returns the derivative of f(x) in the seed direction, computed using forward mode
+    function_value
+        returns the function value of f(x) evaluated at the input parameters(x)
+    """
     def __init__(self, function, input_parameters: list, seed: list):
         self.f = function
         self.input_parameters = []
         self.p_dim = len(input_parameters)
-        self.f_dim = None
         if self.p_dim != len(seed):
             raise IndexError("Input parameters must be same length as seed")
         for i in range(self.p_dim):
@@ -12,8 +31,14 @@ class AutoDiff:
             self.input_parameters.append(node)
         self.seed = seed
         self.output_nodes = None
+        self.f_dim = None
 
     def forward(self):
+        """
+        Computes derivative using forward mode AD
+
+        :return: derivative value
+        """
         self.output_nodes = self.f(self.input_parameters)
         if isinstance(self.output_nodes, list):
             self.f_dim = len(self.output_nodes)
@@ -29,6 +54,11 @@ class AutoDiff:
 
 # TODO: make backward able to handle multidimensional functions
     def backward(self):
+        """
+        Computes derivative using reverse mode AD
+
+        :return: derivative value
+        """
         if self.output_nodes is None:
             self.forward()
 
@@ -41,6 +71,11 @@ class AutoDiff:
         recur_update(self.output_nodes)
 
     def function_value(self):
+        """
+        Evaluates function at x (input parameters)
+
+        :return: function value
+        """
         if self.output_nodes is None:
             self.forward()
         if self.f_dim == 1:
@@ -50,19 +85,55 @@ class AutoDiff:
 
 
 class Node:
-    def __init__(self, name: int, value=None, child=[], parents=[],
+    """
+    Node data structure
+
+    ...
+
+    Attributes
+    ----------
+    name: int
+    value: int, float
+    child: list
+    parents: list
+    for_deriv: int, float
+    back_deriv: dict
+    """
+    def __init__(self, name: int, value, child=None, parents=[],
                  for_deriv=1, back_deriv={}):
-        self.name = name
-        self.value = value
-        self.child = child
+        if isinstance(name, int):
+            self.name = name
+        else:
+            raise TypeError("Node name must be an integer")
+        if isinstance(value, (float, int)):
+            self.value = value
+        else:
+            raise TypeError("Node value must be an integer or float")
         self.parents = parents
+        if child:
+            self.child = child
+        else:
+            self.child = []
         self.for_deriv = for_deriv
         self.back_deriv = back_deriv  # deriv of current node with respect to parents
         self.adjoint = 0
 
     def __add__(self, other):
+        """
+        sum of node with other
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object to which to add to node
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the addition
+        """
         if isinstance(other, Node):
-            new_name = max(self.name, other.name) + 1
+            new_name = self.__new_name__(other)
             value = self.value + other.value
             for_deriv = self.for_deriv + other.for_deriv
             back_deriv = {self.name: 1, other.name: 1}
@@ -72,7 +143,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.name + 1
+            new_name = self.__new_name__(other)
             value = self.value + other
             for_deriv = self.for_deriv
             back_deriv = {self.name: 1}
@@ -85,11 +156,37 @@ class Node:
         return new_node
 
     def __radd__(self, other):
+        """
+        sum of node with other
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object to which to add to node
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the addition
+        """
         return self.__add__(other)
 
     def __sub__(self, other):
+        """
+        difference between node and other
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object to which to subtract from node
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the subtraction
+        """
         if isinstance(other, Node):
-            new_name = max(self.name, other.name) + 1
+            new_name = self.__new_name__(other)
             value = self.value - other.value
             for_deriv = self.for_deriv - other.for_deriv
             back_deriv = {self.name: 1, other.name: -1}
@@ -99,7 +196,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.name + 1
+            new_name = self.__new_name__(other)
             value = self.value - other
             for_deriv = self.for_deriv
             back_deriv = {self.name: 1}
@@ -112,8 +209,21 @@ class Node:
         return new_node
 
     def __rsub__(self, other):
+        """
+        difference between other and node
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object from which to subtract the node
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the subtraction
+        """
         if isinstance(other, Node):
-            new_name = max(self.name, other.name) + 1
+            new_name = self.__new_name__(other)
             value = other.value - self.value
             for_deriv = other.for_deriv - self.for_deriv
             back_deriv = {self.name: -1, other.name: 1}
@@ -123,7 +233,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.name + 1
+            new_name = self.__new_name__(other)
             value = other - self.value
             for_deriv = - self.for_deriv
             back_deriv = {self.name: -1}
@@ -136,8 +246,21 @@ class Node:
         return new_node
 
     def __mul__(self, other):
+        """
+        multiplication between node and other
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object to multiply node by
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the multiplication
+        """
         if isinstance(other, Node):
-            new_name = max(self.name, other.name) + 1
+            new_name = self.__new_name__(other)
             value = self.value * other.value
             for_deriv = self.for_deriv * other.value + other.for_deriv * self.value
             back_deriv = {self.name: other.value, other.name: self.value}
@@ -147,7 +270,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.name + 1
+            new_name = self.__new_name__(other)
             value = self.value * other
             for_deriv = self.for_deriv * other
             back_deriv = {self.name: other}
@@ -159,9 +282,39 @@ class Node:
         self.child.append(new_node)
         return new_node
 
+    def __rmul__(self, other):
+        """
+        multiplication between other and node
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object to multiply node by
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the multiplication
+        """
+        return self.__mul__(other)
+
+
     def __truediv__(self, other):
+        """
+        division between other and node
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object to divide node by
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the division
+        """
         if isinstance(other, Node):
-            new_name = max(self.name, other.name) + 1
+            new_name = self.__new_name__(other)
             value = self.value / other.value
             for_deriv = (self.for_deriv * other.value - self.value * other.for_deriv) / (other.value * other.value)
             back_deriv = {self.name: 1 / other.value, other.name: -self.value / (other.value * other.value)}
@@ -171,7 +324,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.name + 1
+            new_name = self.__new_name__(other)
             value = self.value / other
             for_deriv = self.for_deriv / other
             back_deriv = {self.name: 1}
@@ -183,12 +336,22 @@ class Node:
         self.child.append(new_node)
         return new_node
 
-    def __rmul__(self, other):
-        return self.__mul__(other)
-
     def __rtruediv__(self, other):
+        """
+        division between node and other
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object which is divided by node
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the division
+        """
         if isinstance(other, Node):
-            new_name = max(self.name, other.name) + 1
+            new_name = self.__new_name__(other)
             value = other.value / self.value
             for_deriv = (other.for_deriv * self.value - other.value * self.for_deriv) / (self.value * self.value)
             back_deriv = {self.name: -other.value / (self.value * self.value), other.name: 1 / self.value}
@@ -198,7 +361,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.name + 1
+            new_name = self.__new_name__(other)
             value = other / self.value
             for_deriv = -other / (self.value * self.value)
             back_deriv = {self.name: -other / (self.value * self.value)}
@@ -210,58 +373,44 @@ class Node:
         self.child.append(new_node)
         return new_node
 
+    # TODO: fix naming for multidimensional f, and for when more than 2 independent parameters
+    def __new_name__(self, other):
+        """
+        Compute the name of the new node
 
-if __name__ == '__main__':
-    def f_test(x):
-        return [x[0] / x[1] + x[1] * x[0], x[1] * x[0]]
+        Parameters
+        ----------
+        other: Node, float, integer
+            Other object involved in creation of new node
 
+        Return
+        ------
+        new_name: int
+            name for new node
+        """
+        if isinstance(other, Node):
+            if self.child or other.child:
+                list_child_names = []
+                if self.child:
+                    list_child_names += [child.name for child in self.child]
+                if other.child:
+                    list_child_names += [child.name for child in other.child]
+                new_name = max(list_child_names) + 1
+            else:
+                new_name = max(self.name, other.name) + 1
+        else:
+            if self.child:
+                new_name = max([child.name for child in self.child]) + 1
+            else:
+                new_name = self.name + 1
+        return new_name
 
-    seed = [1, 0]
-    input_parameters = [1, 2]
-    test_AD = AutoDiff(f_test, input_parameters, seed)
-    print(test_AD.forward())
-    # # test division
-    # t1 = Node(1, 3.0, for_deriv=2)
-    # t2 = Node(2, 4.0, for_deriv=3)
-    # t3 = 3/t2
-    # print(t3.value)
-    # print(t3.name)
-    # print(t3.for_deriv)
-    # print(t3.back_deriv)
-
-    # # test multiplication
-    # t1 = Node(1, 3.0, for_deriv=2)
-    # t2 = Node(2, 4.0, for_deriv=3)
-    # t3 = 3*t2
-    # print(t3.value)
-    # print(t3.name)
-    # print(t3.for_deriv)
-    # print(t3.back_deriv)
-
-    # test addition
-    # t1 = Node(1, 3.0, for_deriv=2)
-    # t2 = Node(2, 4.0, for_deriv=3)
-    # t3 = t1 + t2
-    # print(t3.value)
-    # print(t3.name)
-    # print(t3.for_deriv)
-    # print(t3.back_deriv)
-    # t3 = t1 + 10
-    # print(t3.value)
-    # print(t3.name)
-    # print(t3.for_deriv)
-    # print(t3.back_deriv)
-
-    # test subtraction
-    # t1 = Node(1, 3.0, for_deriv=2)
-    # t2 = Node(2, 4.0, for_deriv=3)
-    # t3 = t1 - t2
-    # print(t3.value)
-    # print(t3.name)
-    # print(t3.for_deriv)
-    # print(t3.back_deriv)
-    # t3 = 10-t1
-    # print(t3.value)
-    # print(t3.name)
-    # print(t3.for_deriv)
-    # print(t3.back_deriv)
+    def __str__(self):
+        str_output = f'Name: {self.name}'
+        if self.value:
+            str_output += f'\nValue: {self.value}'
+        if self.child:
+            str_output += f'\nChildren: {[child.name for child in self.child]}'
+        if self.parents:
+            str_output += f'\nParents: {[parent.name for parent in self.parents]}'
+        return str_output
