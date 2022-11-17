@@ -6,17 +6,19 @@ from autodiff import Node
 
 
 def sin(var):
-    """Sine Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the sine
-
     """
+        Sine operator returns the sine of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object which to to apply the sine function
+
+        Returns
+        -------
+        new_node: Node, int, float
+            New node resulting from the applying the sine function  
+        """
     
     if isinstance(var, Node):
         new_name = var.name + 1
@@ -31,17 +33,19 @@ def sin(var):
         raise TypeError   
 
 def cos(var):
-    """Cosine Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the cosine
-
     """
+        Cosine operator returns the cosine of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object which to to apply the cosine function
+
+        Returns
+        -------
+        new_node: Node, int, float
+            New node resulting from the applying the cosine function
+        """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = -np.sin(var.value)*var.for_deriv
@@ -56,16 +60,19 @@ def cos(var):
 
 
 def tan(var):
-    """Tangent Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the tangent
     """
+        Tangent operator returns the tangent of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object which to to apply the tangent function
+
+        Returns
+        -------
+        new_node: Node, float, int
+            New node resulting from the applying the tangent function
+        """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = (np.sin(var.value)/np.cos(var.value))*var.for_deriv
@@ -79,17 +86,19 @@ def tan(var):
         raise TypeError
 
 def arcsin(node):
-    """Arcsin Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the Arcsin
-
     """
+        Arcsin operator returns the arcsin of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object which to to apply the arcsin function
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the applying the arcsin function
+        """
     if isinstance(node, Node):
         new_name = node.name + 1
         for_deriv = (1/np.sqrt(1-(node.value)**2))*node.for_deriv
@@ -103,17 +112,19 @@ def arcsin(node):
         raise TypeError
 
 def arcos(var):
-    """Arcos Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the Arcos
-
     """
+        Arcos operator returns the arcos of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object to which to apply the arcos function
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the applying the arcos function   
+        """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = (-1/np.sqrt(1-(var.value)**2))*var.for_deriv
@@ -128,17 +139,19 @@ def arcos(var):
 
 
 def artan(var):
-    """Arctan Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the Arctan
-
     """
+        Arctan operator returns the arctan of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object to which to apply the arctan function
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the applying the arctan function 
+        """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = (1/(1+(var.value)**2))*var.for_deriv
@@ -152,17 +165,19 @@ def artan(var):
         raise TypeError
 
 def sinh(node):
-    """Sinh Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the Sinh
-
     """
+        Sinh operator returns the sinh of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object to which to apply the sinh function
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the applying the sinh function      
+        """
     if isinstance(node, Node):
         new_name = node.name + 1
         for_deriv = np.cosh(node.value)*node.for_deriv
@@ -176,17 +191,19 @@ def sinh(node):
         raise TypeError
 
 def cosh(var):
-    """Cosh Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the Cosh
-
     """
+        Cosh operator returns the cosh of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object to which to apply the cosh function
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the applying the cosh function      
+        """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = np.sinh(var.value)*var.for_deriv
@@ -200,17 +217,19 @@ def cosh(var):
         raise TypeError
 
 def tanh(var):
-    """Tanh Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the Tanh
-
     """
+        Tanh operator returns the tanh of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object to which to apply the tanh function
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the applying the tanh function      
+        """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = ((1/np.cosh(var.value))**2)*var.for_deriv
@@ -224,17 +243,19 @@ def tanh(var):
         raise TypeError
 
 def sqrt(var):
-    """Square Root Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the Square Root
-
     """
+        Sqaure Root operator returns the square root of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object to which to apply the sqaure root function
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the applying the square root function      
+        """
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = ((1/2)*var.value**(-1/2))*var.for_deriv
@@ -248,18 +269,21 @@ def sqrt(var):
         raise TypeError
 
 def exp(var, base = np.e):
-    """Square Root Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    base: the base of the exponential function (default base is e)
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the exponential 
-
     """
+        Exponential operator returns the exponential of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object to which to apply the exponential function
+        base: positive float, int
+            The base of the exponential, default is set to e
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the applying the exponential function
+        """
     
     if base <= 0:
         raise TypeError
@@ -276,18 +300,21 @@ def exp(var, base = np.e):
         raise TypeError
 
 def log(var, base = np.e):
-    """Logarithm Operator
-
-    INPUT
-    =======
-    var: a real number or Node object
-    base: the base of the Logarithm (default base is e)
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the Logarithm
-
     """
+        Logarithm operator returns the logarithm of var object.
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object to which to apply the logarithm function
+        base: positive float, int
+            The base of the logarithm, default is set to e
+
+        Returns
+        -------
+        new_node: Node, float, int
+            New node resulting from the applying the logarithm
+        """
     if base <= 0:
         raise TypeError
     if isinstance(var, Node):
@@ -303,17 +330,20 @@ def log(var, base = np.e):
         raise TypeError
 
 def sigmoid(var):
-    """Sigmoid Operator (i.e 1/(1 + e^{-var}))
-
-    INPUT
-    =======
-    var: a real number or Node object
-    
-    RETURNS
-    =======
-    output: a real number or new node object after taking the Sigmoid
-
     """
+        Sigmoid operator returns the sigmoid (i.e 1/(1 + e^{-var})) of var object 
+
+        Parameters
+        ----------
+        var: Node, float, int
+            Object to which to apply the sigmoid function
+
+        Returns
+        -------
+        new_node: Node, float, int
+            New node resulting from the applying the sigmoid function   
+        """
+
     if isinstance(var, Node):
         new_name = var.name + 1
         for_deriv = ((np.exp(-var.value))/((np.exp(-var.value)+1)**2))*var.for_deriv
