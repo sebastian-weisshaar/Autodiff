@@ -19,32 +19,40 @@ class TestAutoDiff:
     test_function_value
     """
 
+    def nodes_are_equal(self,node1,other):
+        if isinstance(other, Node):
+            s1=node1.name==other.name
+            s2=node1.value==other.value
+            s3=node1.parents==other.parents
+            s4=node1.child==other.child
+            s5=node1.for_deriv==other.for_deriv
+            s6=node1.back_deriv==other.back_deriv
+            s7=node1.adjoint==other.adjoint
+            if all([s1,s2,s3,s4,s5,s6,s7]):
+                return True
+            return False
+        raise TypeError("Please compare Node with Node")
+
     def test_init(self):
         def f_test(x):
             x1, x2, x3 = x[0], x[1], x[2]
             return x1 * x2 - x3 / x2 + 3 * x3
-        
-        def f_test2(x):
-            x1, x2, x3 = x[0], x[1], x[2]
-            return [x1 * x2 - x3 / x2 + 3 * x3, x1*x2/x3 +x2]
-
+    
         seed = [0, 0, 1]
         input_parameters = [2, 4, 6]
         test_AD = AutoDiff(f_test, input_parameters, seed)
-        test_AD2= AutoDiff(f_test2,input_parameters,seed)
 
 
-        assert test_AD.f == f_test
-        assert test_AD.input_parameters[0] == Node(-2, 2)
-        assert test_AD.input_parameters[1] == Node(-1, 4)
-        #assert test_AD.input_parameters[2] == Node(0, 6)
+
+        #assert test_AD.f == f_test
+        assert test_AD.input_parameters[0] == Node(-2, 2,for_deriv=0)
+        assert test_AD.input_parameters[1] == Node(-1, 4,for_deriv=0)
+        assert test_AD.input_parameters[2] == Node(0, 6,for_deriv=1)
         assert test_AD.seed == seed
         assert test_AD.p_dim == 3
         assert not test_AD.output_nodes
         assert not test_AD.f_dim 
 
-        ## multi output
-        assert test_AD2 == f_test2
 
 
 
@@ -52,12 +60,20 @@ class TestAutoDiff:
         def f_test(x):
             x1, x2, x3 = x[0], x[1], x[2]
             return x1 * x2 - x3 / x2 + 3 * x3
+        
+        def f_test2(x):
+            x1, x2, x3 = x[0], x[1], x[2]
+            return [x1 * x2 - x3 / x2 + 3 * x3, x3*x1/x2 +x2+4*x3]
+
 
         seed = [0, 0, 1]
         input_parameters = [2, 4, 6]
-        test_AD = AutoDiff(f_test, input_parameters, seed)
+        test_AD1 = AutoDiff(f_test, input_parameters, seed)
+        test_AD2= AutoDiff(f_test2,input_parameters,seed)
 
-        assert test_AD.output_nodes.for_deriv == -1 / 4 + 3
+        assert test_AD1.forward() == -1 / 4 + 3
+        assert test_AD2.forward() == [-1 / 4 + 3, 4.5]
+
 
     def test_function_value(self):
         def f_test(x):
@@ -265,3 +281,15 @@ class TestNode:
 
         with pytest.raises(TypeError):
             node_1/'4'
+    
+    def test_printing(self,capsys):
+        test_child=Node(2,100)
+        test_parent=Node(0,200)
+        test_node=Node(1,10,child=[test_child],parents=[test_parent])
+        print(test_node)
+        captured = capsys.readouterr()
+        assert captured.out == "Name: 1\nValue: 10\nChildren: [2]\nParents: [0]\n"
+
+        
+
+       
