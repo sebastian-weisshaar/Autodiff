@@ -185,7 +185,7 @@ def sinh(node):
         new_node = Node(new_name, np.sinh(node.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[node])
         node.child.append(new_node)
         return new_node 
-    elif isinstance(var, (int, float)):
+    elif isinstance(node, (int, float)):
         return np.sinh(node)
     else:
         raise TypeError

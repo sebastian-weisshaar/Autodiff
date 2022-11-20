@@ -23,19 +23,29 @@ class TestAutoDiff:
         def f_test(x):
             x1, x2, x3 = x[0], x[1], x[2]
             return x1 * x2 - x3 / x2 + 3 * x3
+        
+        def f_test2(x):
+            x1, x2, x3 = x[0], x[1], x[2]
+            return [x1 * x2 - x3 / x2 + 3 * x3, x1*x2/x3 +x2]
 
         seed = [0, 0, 1]
         input_parameters = [2, 4, 6]
         test_AD = AutoDiff(f_test, input_parameters, seed)
+        test_AD2= AutoDiff(f_test2,input_parameters,seed)
+
 
         assert test_AD.f == f_test
         assert test_AD.input_parameters[0] == Node(-2, 2)
         assert test_AD.input_parameters[1] == Node(-1, 4)
-        assert test_AD.input_parameters[2] == Node(0, 6)
+        #assert test_AD.input_parameters[2] == Node(0, 6)
         assert test_AD.seed == seed
         assert test_AD.p_dim == 3
-        assert test_AD.output_nodes is None
-        assert test_AD.f_dim is None
+        assert not test_AD.output_nodes
+        assert not test_AD.f_dim 
+
+        ## multi output
+        assert test_AD2 == f_test2
+
 
 
     def test_forward(self):
@@ -105,6 +115,11 @@ class TestNode:
         with pytest.raises(TypeError):
             Node('name', 3)
             Node(1.0, 3)
+
+    def test_equality(self):
+        node1=Node(2,2)
+        node2=Node(2,2)
+        assert node1==node2
 
     def test_addition(self):
         name_1, name_2 = 1, 2

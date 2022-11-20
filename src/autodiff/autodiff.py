@@ -404,6 +404,20 @@ class Node:
             else:
                 new_name = self.name + 1
         return new_name
+    
+    def __eq__(self,other):
+        if isinstance(other, Node):
+            s1=self.name==other.name
+            s2=self.value==other.value
+            s3=self.parents==other.parents
+            s4=self.child==other.child
+            s5=self.for_deriv==other.for_deriv
+            s6=self.back_deriv==other.back_deriv
+            s7=self.adjoint==other.adjoint
+            if all([s1,s2,s3,s4,s5,s6,s7]):
+                return True
+            return False
+        raise TypeError("Please compare Node with Node")
 
     def __str__(self):
         str_output = f'Name: {self.name}'
