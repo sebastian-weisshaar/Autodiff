@@ -85,7 +85,7 @@ def tan(var):
     else:
         raise TypeError
 
-def arcsin(node):
+def arcsin(var):
     """
         Arcsin operator returns the arcsin of var object.
 
@@ -99,15 +99,15 @@ def arcsin(node):
         new_node: Node
             New node resulting from the applying the arcsin function
         """
-    if isinstance(node, Node):
-        new_name = node.name + 1
-        for_deriv = (1/np.sqrt(1-(node.value)**2))*node.for_deriv
-        back_deriv = {node.name: 1/np.sqrt(1-(node.value)**2)}
-        new_node = Node(new_name, np.arcsin(node.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[node])
-        node.child.append(new_node)
+    if isinstance(var, Node):
+        new_name = var.name + 1
+        for_deriv = (1/np.sqrt(1-(var.value)**2))*var.for_deriv
+        back_deriv = {var.name: 1/np.sqrt(1-(var.value)**2)}
+        new_node = Node(new_name, np.arcsin(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
+        var.child.append(new_node)
         return new_node 
     elif isinstance(var, (int, float)):
-        return np.arcsin(node)
+        return np.arcsin(var)
     else:
         raise TypeError
 
