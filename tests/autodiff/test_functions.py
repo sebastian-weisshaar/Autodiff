@@ -5,13 +5,13 @@ import numpy as np
 
 
 class TestFunction:
-    def test_sin():
+    def test_sin(self):
         test_number=np.random.normal(0,100)
         assert(sin(test_number)==np.sin(test_number))
-    def test_cos():
+    def test_cos(self):
         test_number=np.random.normal(0,100)
         assert(cos(test_number)==np.cos(test_number))
-    def test_tan():
+    def test_tan(self):
         test_number=np.random.normal(0,100)
         assert(tan(test_number)==np.tan(test_number))
     
