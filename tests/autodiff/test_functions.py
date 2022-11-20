@@ -5,7 +5,6 @@ from autodiff import Node
 import numpy as np
 import pytest
 
-
 class TestFunction:
     
     def create_node(self,value_range=[-100,100]):
@@ -36,10 +35,6 @@ class TestFunction:
         with pytest.raises(TypeError):
             non_cooperating_object=[]
             fun(non_cooperating_object)
-        
-        
-        
-      
 
     def test_sin(self):
         self.helper_test(sin,np.sin,np.cos)
