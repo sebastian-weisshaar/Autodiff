@@ -26,8 +26,8 @@ class TestFunction:
 
         assert new_node.name==test_node.name+1
         assert new_node.value==numpy_equivalent(test_node.value)
-        deriv=np.round(numpy_derivative(test_node.value),6)
-        assert np.round(new_node.back_deriv[test_node.name],6)==deriv
+        deriv=np.round(numpy_derivative(test_node.value),10)
+        assert np.round(new_node.back_deriv[test_node.name],10)==deriv
         assert type(new_node.back_deriv)==dict
         #assert new_node.back_deriv=={test_node.name: numpy_derivative(test_node.value)}
         assert new_node.for_deriv==numpy_derivative(test_node.value)*test_node.for_deriv
@@ -40,7 +40,7 @@ class TestFunction:
         with pytest.raises(TypeError):
             non_cooperating_object=[]
             fun(non_cooperating_object)
-            
+
 
     def test_sin(self):
         self.helper_test(sin,np.sin,np.cos)
