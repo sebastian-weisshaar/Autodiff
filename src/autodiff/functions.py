@@ -111,7 +111,7 @@ def arcsin(var):
     else:
         raise TypeError
 
-def arcos(var):
+def arccos(var):
     """
         Arcos operator returns the arcos of var object.
 
@@ -138,7 +138,7 @@ def arcos(var):
         raise TypeError
 
 
-def artan(var):
+def arctan(var):
     """
         Arctan operator returns the arctan of var object.
 
