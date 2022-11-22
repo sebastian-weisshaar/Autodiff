@@ -1,17 +1,16 @@
 
 import sys
-#sys.path.insert(1, './src/autodiff')
 import numpy as np
 import pytest
+sys.path.insert(1, './src/autodiff')
 from autodiff.autodiff import AutoDiff
 from autodiff.autodiff import Node
 
 
 class TestAutoDiff:
     """
-    Test class for autodiff class.
+    Test class for autodiff class
 
-    ...
     Methods
     -------
     test_init
@@ -20,6 +19,7 @@ class TestAutoDiff:
     """
 
     def test_init(self):
+        """Test initialization of AutoDiff class"""
         def f_test(x):
             x1, x2, x3 = x[0], x[1], x[2]
             return x1 * x2 - x3 / x2 + 3 * x3
@@ -43,6 +43,7 @@ class TestAutoDiff:
 
 
     def test_forward(self):
+        """Test forward mode derivative of AutoDiff class"""
         def f_test(x):
             x1, x2, x3 = x[0], x[1], x[2]
             return x1 * x2 - x3 / x2 + 3 * x3
@@ -62,6 +63,7 @@ class TestAutoDiff:
 
 
     def test_function_value(self):
+        """Test fiunction value of AutoDiff class"""
         def f_test(x):
             x1, x2, x3 = x[0], x[1], x[2]
             return x1 * x2 - x3 / x2 + 3 * x3
@@ -77,18 +79,19 @@ class TestNode:
     """
     Test class for Node class.
 
-    ...
     Methods
     -------
     test_init
     test_addition
     test_subtraction
     test_division
+    test_equality
     test_multiplication
     test_printing
     """
 
     def test_init(self):
+        """Test initialization of Node class"""
         name = 1
         value = 3
         child = []
@@ -120,11 +123,13 @@ class TestNode:
             Node(1.0, 3)
 
     def test_equality(self):
+        """Test equality dunder method of Node class"""
         node1=Node(2,2)
         node2=Node(2,2)
         assert node1==node2
 
     def test_addition(self):
+        """Test addition dunder method of Node class"""
         name_1, name_2 = 1, 2
         value_1, value_2 = 3.0, 4.0
         for_deriv_1, for_deriv_2 = 2.0, 3
@@ -161,6 +166,7 @@ class TestNode:
             node_1 + '3'
 
     def test_subtraction(self):
+        """Test subtraction dunder method of Node class"""
         name_1, name_2 = 1, 9
         value_1, value_2 = -3.0, 190
         for_deriv_1, for_deriv_2 = 2.0, 3
@@ -197,6 +203,7 @@ class TestNode:
             node_1 - '4'
 
     def test_multiplication(self):
+        """Test multiplicatio dunder method of Node class"""
         name_1, name_2 = 1, 2
         value_1, value_2 = 3.0, 4.0
         for_deriv_1, for_deriv_2 = 2.0, 3
@@ -232,6 +239,7 @@ class TestNode:
             node_1*'4'
 
     def test_division(self):
+        """Test division dunder method of Node class"""
         name_1, name_2 = 3, 4
         value_1, value_2 = 2.0, 4.3
         for_deriv_1, for_deriv_2 = 2.1, 3.01
@@ -270,6 +278,7 @@ class TestNode:
             node_1/'4'
     
     def test_printing(self,capsys):
+        """Test printing dunder method of Node class"""
         test_child=Node(2,100)
         test_parent=Node(0,200)
         test_node=Node(1,10,child=[test_child],parents=[test_parent])
