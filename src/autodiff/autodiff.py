@@ -337,7 +337,7 @@ class Node:
         return new_node
 
     # TODO: fix naming for multidimensional f, and for when more than 2 independent parameters
-    def __new_name__(self, other):
+    def __new_name__(self, other=None):
         """
         Compute the name of the new node
 
