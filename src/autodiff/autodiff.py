@@ -222,17 +222,8 @@ class Node:
         new_node: Node
             New node resulting from the subtraction
         """
-        if isinstance(other, Node):
-            new_name = self.__new_name__(other)
-            value = other.value - self.value
-            for_deriv = other.for_deriv - self.for_deriv
-            back_deriv = {self.name: -1, other.name: 1}
-            parents = [self, other]
-            new_node = Node(new_name, value, for_deriv=for_deriv, back_deriv=back_deriv,
-                            parents=parents)
-            other.child.append(new_node)
-
-        elif isinstance(other, (float, int)):
+        
+        if isinstance(other, (float, int)):
             new_name = self.__new_name__(other)
             value = other - self.value
             for_deriv = - self.for_deriv
@@ -350,17 +341,7 @@ class Node:
         new_node: Node
             New node resulting from the division
         """
-        if isinstance(other, Node):
-            new_name = self.__new_name__(other)
-            value = other.value / self.value
-            for_deriv = (other.for_deriv * self.value - other.value * self.for_deriv) / (self.value * self.value)
-            back_deriv = {self.name: -other.value / (self.value * self.value), other.name: 1 / self.value}
-            parents = [self, other]
-            new_node = Node(new_name, value, for_deriv=for_deriv, back_deriv=back_deriv,
-                            parents=parents)
-            other.child.append(new_node)
-
-        elif isinstance(other, (float, int)):
+        if isinstance(other, (float, int)):
             new_name = self.__new_name__(other)
             value = other / self.value
             for_deriv = -other / (self.value * self.value)
