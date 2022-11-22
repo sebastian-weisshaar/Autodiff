@@ -52,24 +52,6 @@ class AutoDiff:
             self.output_nodes.adjoint = 1
             return self.output_nodes.for_deriv
 
-# TODO: make backward able to handle multidimensional functions
-    def backward(self):
-        """
-        Computes derivative using reverse mode AD
-
-        :return: derivative value
-        """
-        if self.output_nodes is None:
-            self.forward()
-
-        def recur_update(node):
-            if node.parents:
-                for parent in node.parents:
-                    parent.adjoint += node.adjoint * node.back_deriv[parent.name]
-                    return recur_update(parent)
-
-        recur_update(self.output_nodes)
-
     def function_value(self):
         """
         Evaluates function at x (input parameters)
