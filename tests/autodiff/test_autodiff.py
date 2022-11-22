@@ -3,8 +3,8 @@ import sys
 import numpy as np
 import pytest
 sys.path.insert(1, './src/autodiff')
-from autodiff.autodiff import AutoDiff
-from autodiff.autodiff import Node
+from autodiff import AutoDiff
+from autodiff import Node
 
 
 class TestAutoDiff:
