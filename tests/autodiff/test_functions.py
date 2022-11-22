@@ -5,7 +5,22 @@ from autodiff import Node
 import numpy as np
 import pytest
 
+
+
 class TestFunction:
+    """
+        Test for functions in functions.py
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object to multiply node by
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the multiplication
+        """
     
     def create_node(self,value_range=[-100,100]):
         p1,p2=value_range
@@ -14,28 +29,25 @@ class TestFunction:
         test_node=Node(np.random.randint(-1,1000),value,[],[],for_deriv,{})
         return test_node
 
-    def helper_test(self,fun,numpy_equivalent,numpy_derivative,input_range=[-100,100],derivative_range=[-100,100]):
-
+    def helper_test(self,fun,number_equivalent,derivative,input_range=[-100,100],derivative_range=[-100,100]):
         test_node=self.create_node(value_range=input_range)
         new_node=fun(test_node)
         p1,p2=input_range
         test_number1=np.random.uniform(p1,p2)
         test_number2=np.random.randint(p1,p2)
 
-        print(numpy_equivalent,test_node.value)
-
         assert new_node.name==test_node.name+1
-        assert new_node.value==numpy_equivalent(test_node.value)
-        deriv=np.round(numpy_derivative(test_node.value),10)
+        assert new_node.value==number_equivalent(test_node.value)
+        deriv=np.round(derivative(test_node.value),10)
         assert np.round(new_node.back_deriv[test_node.name],10)==deriv
         assert type(new_node.back_deriv)==dict
         #assert new_node.back_deriv=={test_node.name: numpy_derivative(test_node.value)}
-        assert new_node.for_deriv==numpy_derivative(test_node.value)*test_node.for_deriv
+        assert new_node.for_deriv==derivative(test_node.value)*test_node.for_deriv
         assert new_node.parents==[test_node]
         assert test_node.child==[new_node]
 
-        assert numpy_equivalent(test_number1)==fun(test_number1)
-        assert numpy_equivalent(test_number2)==fun(test_number2)
+        assert number_equivalent(test_number1)==fun(test_number1)
+        assert number_equivalent(test_number2)==fun(test_number2)
 
         with pytest.raises(TypeError):
             non_cooperating_object=[]
@@ -46,7 +58,7 @@ class TestFunction:
         self.helper_test(sin,np.sin,np.cos)
     def test_cos(self):
         self.helper_test(cos,np.cos,lambda x: -np.sin(x))
-    # UPDATE DERIVATIVE DEFINIZION
+    # UPDATE DERIVATIVE DEFINITION
     def test_tan(self):
         self.helper_test(tan,np.tan,lambda x: np.sin(x)/(np.cos(x)))
 

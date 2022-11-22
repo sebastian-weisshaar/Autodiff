@@ -1,10 +1,10 @@
 
 import sys
-sys.path.insert(1, './src/autodiff')
+#sys.path.insert(1, './src/autodiff')
 import numpy as np
 import pytest
-from autodiff import AutoDiff
-from autodiff import Node
+from autodiff.autodiff import AutoDiff
+from autodiff.autodiff import Node
 
 
 class TestAutoDiff:
@@ -18,20 +18,6 @@ class TestAutoDiff:
     test_forward
     test_function_value
     """
-
-    def nodes_are_equal(self,node1,other):
-        if isinstance(other, Node):
-            s1=node1.name==other.name
-            s2=node1.value==other.value
-            s3=node1.parents==other.parents
-            s4=node1.child==other.child
-            s5=node1.for_deriv==other.for_deriv
-            s6=node1.back_deriv==other.back_deriv
-            s7=node1.adjoint==other.adjoint
-            if all([s1,s2,s3,s4,s5,s6,s7]):
-                return True
-            return False
-        raise TypeError("Please compare Node with Node")
 
     def test_init(self):
         def f_test(x):
@@ -99,6 +85,7 @@ class TestNode:
     test_subtraction
     test_division
     test_multiplication
+    test_printing
     """
 
     def test_init(self):
