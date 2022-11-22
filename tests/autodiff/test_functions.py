@@ -108,7 +108,7 @@ class TestFunction:
     # UPDATE DERIVATIVE DEFINITION
     def test_tan(self):
         """Apply helper_test on the tan function"""
-        self.helper_test(tan,np.tan,lambda x: np.sin(x)/(np.cos(x)))
+        self.helper_test(tan,np.tan,lambda x: 1/(np.cos(x)**2))
 
     def test_sinh(self):
         """Apply helper_test on the sinh function"""
