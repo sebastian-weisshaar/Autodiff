@@ -5,7 +5,7 @@ name: coverage
 on:
   # Workflow should run on test_suite pushes
   push:
-    branches: [ test_suite ]
+    branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -22,14 +22,8 @@ jobs:
           python-version: '3.10' 
       - name: Install Python dependencies
         run: pip install pytest pytest-cov numpy
-      - name : Print all
-        run: pwd
-      - name: show files
-        run: ls -al
-      - name: set pythonpath
-        run: export PYTHONPATH=/opt/github-runner/code1/_work/team19/team19/src
       - name: Test coverage of 90%
-        run: pytest --cov=tests/ --cov-fail-under=90
+        run: pytest --cov=src/autodiff --cov-fail-under=90
       
     
       
