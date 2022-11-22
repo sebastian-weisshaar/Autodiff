@@ -164,7 +164,7 @@ def arctan(var):
     else:
         raise TypeError
 
-def sinh(node):
+def sinh(var):
     """
         Sinh operator returns the sinh of var object.
 
@@ -178,15 +178,15 @@ def sinh(node):
         new_node: Node
             New node resulting from the applying the sinh function      
         """
-    if isinstance(node, Node):
+    if isinstance(var, Node):
         new_name = var.__new_name__()
-        for_deriv = np.cosh(node.value)*node.for_deriv
-        back_deriv = {node.name: np.cosh(node.value)}
-        new_node = Node(new_name, np.sinh(node.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[node])
-        node.child.append(new_node)
+        for_deriv = np.cosh(var.value)*var.for_deriv
+        back_deriv = {var.name: np.cosh(var.value)}
+        new_node = Node(new_name, np.sinh(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
+        var.child.append(new_node)
         return new_node 
-    elif isinstance(node, (int, float)):
-        return np.sinh(node)
+    elif isinstance(var, (int, float)):
+        return np.sinh(var)
     else:
         raise TypeError
 
