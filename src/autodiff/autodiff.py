@@ -39,7 +39,9 @@ class AutoDiff:
 
         :return: derivative value
         """
-        self.output_nodes = self.f(self.input_parameters)
+        if self.output_nodes is None:
+            self.output_nodes = self.f(self.input_parameters)
+
         if isinstance(self.output_nodes, list):
             self.f_dim = len(self.output_nodes)
             for_deriv = []
