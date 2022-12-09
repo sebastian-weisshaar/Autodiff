@@ -1,3 +1,8 @@
+import copy
+import random
+import numpy as np
+from typing import Union,Callable
+
 class AutoDiff:
     """
     Autodiff class, for computing automatic derivatives of functions
@@ -20,50 +25,122 @@ class AutoDiff:
     function_value
         returns the function value of f(x) evaluated at the input parameters(x)
     """
-    def __init__(self, function, input_parameters: list, seed: list):
-        self.f = function
-        self.input_parameters = []
-        self.p_dim = len(input_parameters)
-        if self.p_dim != len(seed):
-            raise IndexError("Input parameters must be same length as seed")
-        for i in range(self.p_dim):
-            node = Node((i + 1) - self.p_dim, input_parameters[i], for_deriv=seed[i])
-            self.input_parameters.append(node)
-        self.seed = seed
-        self.output_nodes = None
-        self.f_dim = None
-
-    def forward(self):
-        """
-        Computes derivative using forward mode AD
-
-        :return: derivative value
-        """
-        self.output_nodes = self.f(self.input_parameters)
-        if isinstance(self.output_nodes, list):
-            self.f_dim = len(self.output_nodes)
-            for_deriv = []
-            for output_node in self.output_nodes:
-                output_node.adjoint = 1
-                for_deriv.append(output_node.for_deriv)
-            return for_deriv
+    def __init__(self, functions: list):
+        if isinstance(functions,Callable):
+            self.f_dim=1
+            self.function=[functions]
+        elif isinstance(functions,list):
+            self.f_dim=len(functions)
+            self.function=functions
         else:
-            self.f_dim = 1
-            self.output_nodes.adjoint = 1
-            return self.output_nodes.for_deriv
-
-    def function_value(self):
+            raise TypeError
+        
+        
+        self.input_nodes=[]
+        self.output_nodes = []
+       
+    
+    def f(self, x):
         """
         Evaluates function at x (input parameters)
 
         :return: function value
         """
-        if self.output_nodes is None:
-            self.forward()
-        if self.f_dim == 1:
-            return self.output_nodes.value
+        return np.array([f_i(x) for f_i in self.function])
+   
+    def df(self,x,method="forward",seed=None):
+        assert isinstance(x,(float,int,list))
+        if isinstance(x, (float,int)):
+            input_vector = [x]
+
         else:
-            return [output_node.value for output_node in self.output_nodes]
+            input_vector=x
+        self.x_dim = len(input_vector)
+
+        self.input_nodes=[]
+        self.output_nodes=[]
+        # Set seed vector
+        if not seed:
+            self.seed=np.ones(self.x_dim)
+        else:
+            assert len(seed)==self.x_dim, "The seed vector must be the same shape as the input x"
+
+        for i in range(self.x_dim):
+            node = Node((i + 1) - self.x_dim, input_vector[i], for_deriv=self.seed[i])
+            self.input_nodes.append(node)
+        
+        if self.f_dim>1:
+            self.input_nodes = [copy.deepcopy(self.input_nodes) for _ in range(self.f_dim)]
+
+        if method=="forward":
+            return self._forward()
+        elif method=="backward":
+            return self._backward()
+        else:
+            raise TypeError
+        
+
+
+
+    def _forward(self):
+        """
+        Computes derivative using forward mode AD
+
+        :return: derivative value
+        """
+        
+        for function_i, input_node in zip(self.function, self.input_nodes):
+           
+            if self.x_dim==1 and self.f_dim>1:
+                print(input_node)
+                input_node=input_node[0]
+                print(input_node)
+
+            output_node = function_i(input_node)
+            self.output_nodes.append(output_node)
+
+        for_deriv = []
+        
+        if self.f_dim==1:
+            for output_node in self.output_nodes:
+                output_node.adjoint = 1
+                for_deriv.append(output_node.for_deriv)
+        
+            
+
+
+        
+        return for_deriv
+
+   
+
+    def _backward(self):
+        """
+        Computes derivative using reverse mode AD
+        :return: derivative value
+        """
+        
+        def recur_update(node):
+            if node.parents:
+                for parent in node.parents:
+                    parent.adjoint += node.adjoint * node.back_deriv[parent.name]
+                    recur_update(parent)
+
+        self._forward()
+
+        for output_node in self.output_nodes:
+            recur_update(output_node)
+
+
+        adjoints = np.zeros((self.f_dim, self.x_dim))
+        if self.f_dim>1:
+            for i, input_node in zip(range(self.f_dim), self.input_nodes):
+                adjoints[i] = np.array([input_parameter_xi.adjoint for input_parameter_xi in input_node])
+        else:
+            adjoints = np.array([input_parameter_xi.adjoint for input_parameter_xi in self.input_nodes])
+
+        backward_deriv = adjoints @ np.array(self.seed)
+        return np.array([backward_deriv])
 
 
 class Node:
@@ -115,7 +192,7 @@ class Node:
             New node resulting from the addition
         """
         if isinstance(other, Node):
-            new_name = self.__new_name__(other)
+            new_name = self.__new_name__()
             value = self.value + other.value
             for_deriv = self.for_deriv + other.for_deriv
             back_deriv = {self.name: 1, other.name: 1}
@@ -125,7 +202,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.__new_name__(other)
+            new_name = self.__new_name__()
             value = self.value + other
             for_deriv = self.for_deriv
             back_deriv = {self.name: 1}
@@ -168,7 +245,7 @@ class Node:
             New node resulting from the subtraction
         """
         if isinstance(other, Node):
-            new_name = self.__new_name__(other)
+            new_name = self.__new_name__()
             value = self.value - other.value
             for_deriv = self.for_deriv - other.for_deriv
             back_deriv = {self.name: 1, other.name: -1}
@@ -178,7 +255,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.__new_name__(other)
+            new_name = self.__new_name__()
             value = self.value - other
             for_deriv = self.for_deriv
             back_deriv = {self.name: 1}
@@ -206,7 +283,7 @@ class Node:
         """
         
         if isinstance(other, (float, int)):
-            new_name = self.__new_name__(other)
+            new_name = self.__new_name__()
             value = other - self.value
             for_deriv = - self.for_deriv
             back_deriv = {self.name: -1}
@@ -233,7 +310,7 @@ class Node:
             New node resulting from the multiplication
         """
         if isinstance(other, Node):
-            new_name = self.__new_name__(other)
+            new_name = self.__new_name__()
             value = self.value * other.value
             for_deriv = self.for_deriv * other.value + other.for_deriv * self.value
             back_deriv = {self.name: other.value, other.name: self.value}
@@ -243,7 +320,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.__new_name__(other)
+            new_name = self.__new_name__()
             value = self.value * other
             for_deriv = self.for_deriv * other
             back_deriv = {self.name: other}
@@ -287,7 +364,7 @@ class Node:
             New node resulting from the division
         """
         if isinstance(other, Node):
-            new_name = self.__new_name__(other)
+            new_name = self.__new_name__()
             value = self.value / other.value
             for_deriv = (self.for_deriv * other.value - self.value * other.for_deriv) / (other.value * other.value)
             back_deriv = {self.name: 1 / other.value, other.name: -self.value / (other.value * other.value)}
@@ -297,7 +374,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.__new_name__(other)
+            new_name = self.__new_name__()
             value = self.value / other
             for_deriv = self.for_deriv / other
             back_deriv = {self.name: 1}
@@ -324,7 +401,7 @@ class Node:
             New node resulting from the division
         """
         if isinstance(other, (float, int)):
-            new_name = self.__new_name__(other)
+            new_name = self.__new_name__()
             value = other / self.value
             for_deriv = -other / (self.value * self.value)
             back_deriv = {self.name: -other / (self.value * self.value)}
@@ -336,37 +413,15 @@ class Node:
         self.child.append(new_node)
         return new_node
 
-    # TODO: fix naming for multidimensional f, and for when more than 2 independent parameters
-    def __new_name__(self, other=None):
+    def __new_name__(self):
         """
         Compute the name of the new node
-
-        Parameters
-        ----------
-        other: Node, float, integer
-            Other object involved in creation of new node
-
         Return
         ------
         new_name: int
             name for new node
         """
-        if isinstance(other, Node):
-            if self.child or other.child:
-                list_child_names = []
-                if self.child:
-                    list_child_names += [child.name for child in self.child]
-                if other.child:
-                    list_child_names += [child.name for child in other.child]
-                new_name = max(list_child_names) + 1
-            else:
-                new_name = max(self.name, other.name) + 1
-        else:
-            if self.child:
-                new_name = max([child.name for child in self.child]) + 1
-            else:
-                new_name = self.name + 1
-        return new_name
+        return random.getrandbits(64)
     
     def __eq__(self,other):
         if isinstance(other, Node):
@@ -390,4 +445,5 @@ class Node:
             str_output += f'\nChildren: {[child.name for child in self.child]}'
         if self.parents:
             str_output += f'\nParents: {[parent.name for parent in self.parents]}'
+        str_output += f'\nAdjoint: {[self.adjoint]}'
         return str_output
