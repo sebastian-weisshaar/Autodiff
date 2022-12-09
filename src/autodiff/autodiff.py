@@ -41,6 +41,11 @@ class AutoDiff:
        
     
     def f(self, x):
+        """
+        Evaluates function at x (input parameters)
+
+        :return: function value
+        """
         return np.array([f_i(x) for f_i in self.function])
    
     def df(self,x,method="forward",seed=None):
@@ -68,36 +73,36 @@ class AutoDiff:
             self.input_nodes = [copy.deepcopy(self.input_nodes) for _ in range(self.f_dim)]
 
         if method=="forward":
-            return self.forward()
+            return self._forward()
         elif method=="backward":
-            return self.backward()
+            return self._backward()
         else:
             raise TypeError
         
 
 
 
-    def forward(self):
+    def _forward(self):
         """
         Computes derivative using forward mode AD
 
         :return: derivative value
         """
-        print("Before",self.output_nodes)
-        print("Function",self.function)
         
         for function_i, input_node in zip(self.function, self.input_nodes):
+           
+            if self.x_dim==1 and self.f_dim>1:
+                print(input_node)
+                input_node=input_node[0]
+                print(input_node)
+
             output_node = function_i(input_node)
-            print("node",output_node)
-            print("in loop",type(output_node))
             self.output_nodes.append(output_node)
 
-        print("After",self.output_nodes)
         for_deriv = []
         
         if self.f_dim==1:
             for output_node in self.output_nodes:
-                print(output_node)
                 output_node.adjoint = 1
                 for_deriv.append(output_node.for_deriv)
         
@@ -107,18 +112,9 @@ class AutoDiff:
         
         return for_deriv
 
-    def function_value(self):
-        """
-        Evaluates function at x (input parameters)
+   
 
-        :return: function value
-        """
-        if len(self.output_nodes) == 0:
-            self.forward()
-
-        return [output_node.value for output_node in self.output_nodes]
-
-    def backward(self):
+    def _backward(self):
         """
         Computes derivative using reverse mode AD
         :return: derivative value
@@ -130,7 +126,7 @@ class AutoDiff:
                     parent.adjoint += node.adjoint * node.back_deriv[parent.name]
                     recur_update(parent)
 
-        self.forward()
+        self._forward()
 
         for output_node in self.output_nodes:
             recur_update(output_node)
