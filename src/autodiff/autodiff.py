@@ -1,6 +1,7 @@
 import copy
 import random
 import numpy as np
+from typing import Union,Callable
 
 class AutoDiff:
     """
@@ -24,21 +25,57 @@ class AutoDiff:
     function_value
         returns the function value of f(x) evaluated at the input parameters(x)
     """
-    def __init__(self, functions: list, input_parameters: list, seed: list):
-        self.functions = functions
-        self.input_parameters = []
-        self.p_dim = len(input_parameters)
-        self.f_dim = len(functions)
-        if self.p_dim != len(seed):
-            raise IndexError("Input parameters must be same length as seed")
-        initial_nodes = []
-        for i in range(self.p_dim):
-            node = Node((i + 1) - self.p_dim, input_parameters[i], for_deriv=seed[i])
-            initial_nodes.append(node)
-        self.input_parameters = [copy.deepcopy(initial_nodes) for _ in range(self.f_dim)]
-        self.seed = seed
+    def __init__(self, functions: list):
+        if isinstance(functions,Callable):
+            self.f_dim=1
+            self.function=[functions]
+        elif isinstance(functions,list):
+            self.f_dim=len(functions)
+            self.function=functions
+        else:
+            raise TypeError
+        
+        
+        self.input_nodes=[]
         self.output_nodes = []
-        self.backward_status = False
+       
+    
+    def f(self, x):
+        return np.array([f_i(x) for f_i in self.function])
+   
+    def df(self,x,method="forward",seed=None):
+        assert isinstance(x,(float,int,list))
+        if isinstance(x, (float,int)):
+            input_vector = [x]
+
+        else:
+            input_vector=x
+        self.x_dim = len(input_vector)
+
+        self.input_nodes=[]
+        self.output_nodes=[]
+        # Set seed vector
+        if not seed:
+            self.seed=np.ones(self.x_dim)
+        else:
+            assert len(seed)==self.x_dim, "The seed vector must be the same shape as the input x"
+
+        for i in range(self.x_dim):
+            node = Node((i + 1) - self.x_dim, input_vector[i], for_deriv=self.seed[i])
+            self.input_nodes.append(node)
+        
+        if self.f_dim>1:
+            self.input_nodes = [copy.deepcopy(self.input_nodes) for _ in range(self.f_dim)]
+
+        if method=="forward":
+            return self.forward()
+        elif method=="backward":
+            return self.backward()
+        else:
+            raise TypeError
+        
+
+
 
     def forward(self):
         """
@@ -46,15 +83,28 @@ class AutoDiff:
 
         :return: derivative value
         """
-        if len(self.output_nodes) == 0:
-            for function, input_parameter in zip(self.functions, self.input_parameters):
-                output_node = function(input_parameter)
-                self.output_nodes.append(output_node)
+        print("Before",self.output_nodes)
+        print("Function",self.function)
+        
+        for function_i, input_node in zip(self.function, self.input_nodes):
+            output_node = function_i(input_node)
+            print("node",output_node)
+            print("in loop",type(output_node))
+            self.output_nodes.append(output_node)
 
+        print("After",self.output_nodes)
         for_deriv = []
-        for output_node in self.output_nodes:
-            output_node.adjoint = 1
-            for_deriv.append(output_node.for_deriv)
+        
+        if self.f_dim==1:
+            for output_node in self.output_nodes:
+                print(output_node)
+                output_node.adjoint = 1
+                for_deriv.append(output_node.for_deriv)
+        
+            
+
+
+        
         return for_deriv
 
     def function_value(self):
@@ -73,26 +123,28 @@ class AutoDiff:
         Computes derivative using reverse mode AD
         :return: derivative value
         """
+        
         def recur_update(node):
             if node.parents:
                 for parent in node.parents:
                     parent.adjoint += node.adjoint * node.back_deriv[parent.name]
                     recur_update(parent)
 
-        if not self.backward_status:
-            if len(self.output_nodes) == 0:
-                self.forward()
+        self.forward()
 
-            for output_node in self.output_nodes:
-                recur_update(output_node)
+        for output_node in self.output_nodes:
+            recur_update(output_node)
 
-            self.backward_status = True  # Update boolean to check whether backward was used before
 
-        adjoints = np.zeros((self.f_dim, self.p_dim))
-        for i, input_parameter in zip(range(self.f_dim), self.input_parameters):
-            adjoints[i] = np.array([input_parameter_xi.adjoint for input_parameter_xi in input_parameter])
+        adjoints = np.zeros((self.f_dim, self.x_dim))
+        if self.f_dim>1:
+            for i, input_node in zip(range(self.f_dim), self.input_nodes):
+                adjoints[i] = np.array([input_parameter_xi.adjoint for input_parameter_xi in input_node])
+        else:
+            adjoints = np.array([input_parameter_xi.adjoint for input_parameter_xi in self.input_nodes])
+
         backward_deriv = adjoints @ np.array(self.seed)
-        return backward_deriv
+        return np.array([backward_deriv])
 
 
 class Node:
