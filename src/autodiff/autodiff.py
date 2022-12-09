@@ -1,7 +1,8 @@
 import copy
 import random
 import numpy as np
-from typing import Union,Callable
+from typing import Union, Callable
+
 
 class AutoDiff:
     """
@@ -25,21 +26,20 @@ class AutoDiff:
     function_value
         returns the function value of f(x) evaluated at the input parameters(x)
     """
+
     def __init__(self, functions: list):
-        if isinstance(functions,Callable):
-            self.f_dim=1
-            self.function=[functions]
-        elif isinstance(functions,list):
-            self.f_dim=len(functions)
-            self.function=functions
+        if isinstance(functions, Callable):
+            self.f_dim = 1
+            self.function = [functions]
+        elif isinstance(functions, list):
+            self.f_dim = len(functions)
+            self.function = functions
         else:
             raise TypeError
-        
-        
-        self.input_nodes=[]
+
+        self.input_nodes = []
         self.output_nodes = []
-       
-    
+
     def f(self, x):
         """
         Evaluates function at x (input parameters)
@@ -47,40 +47,37 @@ class AutoDiff:
         :return: function value
         """
         return np.array([f_i(x) for f_i in self.function])
-   
-    def df(self,x,method="forward",seed=None):
-        assert isinstance(x,(float,int,list))
-        if isinstance(x, (float,int)):
+
+    def df(self, x, method="forward", seed=None):
+        assert isinstance(x, (float, int, list))
+        if isinstance(x, (float, int)):
             input_vector = [x]
 
         else:
-            input_vector=x
+            input_vector = x
         self.x_dim = len(input_vector)
 
-        self.input_nodes=[]
-        self.output_nodes=[]
+        self.input_nodes = []
+        self.output_nodes = []
         # Set seed vector
         if not seed:
-            self.seed=np.ones(self.x_dim)
+            self.seed = np.ones(self.x_dim)
         else:
-            assert len(seed)==self.x_dim, "The seed vector must be the same shape as the input x"
+            assert len(seed) == self.x_dim, "The seed vector must be the same shape as the input x"
 
         for i in range(self.x_dim):
             node = Node((i + 1) - self.x_dim, input_vector[i], for_deriv=self.seed[i])
             self.input_nodes.append(node)
-        
-        if self.f_dim>1:
+
+        if self.f_dim > 1:
             self.input_nodes = [copy.deepcopy(self.input_nodes) for _ in range(self.f_dim)]
 
-        if method=="forward":
+        if method == "forward":
             return self._forward()
-        elif method=="backward":
+        elif method == "backward":
             return self._backward()
         else:
             raise TypeError
-        
-
-
 
     def _forward(self):
         """
@@ -88,38 +85,29 @@ class AutoDiff:
 
         :return: derivative value
         """
-        
+
         for function_i, input_node in zip(self.function, self.input_nodes):
-           
-            if self.x_dim==1 and self.f_dim>1:
-                print(input_node)
-                input_node=input_node[0]
-                print(input_node)
+
+            if self.x_dim == 1 and self.f_dim > 1:
+                input_node = input_node[0]
 
             output_node = function_i(input_node)
             self.output_nodes.append(output_node)
 
         for_deriv = []
-        
-        if self.f_dim==1:
-            for output_node in self.output_nodes:
-                output_node.adjoint = 1
-                for_deriv.append(output_node.for_deriv)
-        
-            
 
+        for output_node in self.output_nodes:
+            output_node.adjoint = 1
+            for_deriv.append(output_node.for_deriv)
 
-        
-        return for_deriv
-
-   
+        return np.array(for_deriv)
 
     def _backward(self):
         """
         Computes derivative using reverse mode AD
         :return: derivative value
         """
-        
+
         def recur_update(node):
             if node.parents:
                 for parent in node.parents:
@@ -131,16 +119,15 @@ class AutoDiff:
         for output_node in self.output_nodes:
             recur_update(output_node)
 
-
         adjoints = np.zeros((self.f_dim, self.x_dim))
-        if self.f_dim>1:
+        if self.f_dim > 1:
             for i, input_node in zip(range(self.f_dim), self.input_nodes):
                 adjoints[i] = np.array([input_parameter_xi.adjoint for input_parameter_xi in input_node])
         else:
             adjoints = np.array([input_parameter_xi.adjoint for input_parameter_xi in self.input_nodes])
 
         backward_deriv = adjoints @ np.array(self.seed)
-        return np.array([backward_deriv])
+        return np.asarray(backward_deriv)
 
 
 class Node:
@@ -158,6 +145,7 @@ class Node:
     for_deriv: int, float
     back_deriv: dict
     """
+
     def __init__(self, name: int, value, child=None, parents=[],
                  for_deriv=1, back_deriv={}):
         if isinstance(name, int):
@@ -281,7 +269,7 @@ class Node:
         new_node: Node
             New node resulting from the subtraction
         """
-        
+
         if isinstance(other, (float, int)):
             new_name = self.__new_name__()
             value = other - self.value
@@ -347,7 +335,6 @@ class Node:
             New node resulting from the multiplication
         """
         return self.__mul__(other)
-
 
     def __truediv__(self, other):
         """
@@ -422,17 +409,17 @@ class Node:
             name for new node
         """
         return random.getrandbits(64)
-    
-    def __eq__(self,other):
+
+    def __eq__(self, other):
         if isinstance(other, Node):
-            s1=self.name==other.name
-            s2=self.value==other.value
-            s3=self.parents==other.parents
-            s4=self.child==other.child
-            s5=self.for_deriv==other.for_deriv
-            s6=self.back_deriv==other.back_deriv
-            s7=self.adjoint==other.adjoint
-            if all([s1,s2,s3,s4,s5,s6,s7]):
+            s1 = self.name == other.name
+            s2 = self.value == other.value
+            s3 = self.parents == other.parents
+            s4 = self.child == other.child
+            s5 = self.for_deriv == other.for_deriv
+            s6 = self.back_deriv == other.back_deriv
+            s7 = self.adjoint == other.adjoint
+            if all([s1, s2, s3, s4, s5, s6, s7]):
                 return True
             return False
         raise TypeError("Please compare Node with Node")
