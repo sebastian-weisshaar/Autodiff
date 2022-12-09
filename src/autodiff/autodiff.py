@@ -32,11 +32,12 @@ class AutoDiff:
             self.f_dim = 1
             self.function = [functions]
         elif isinstance(functions, list):
+            assert len(functions) != 1, "One dimensional function should be provided as a callable object and not a " \
+                                        "list "
             self.f_dim = len(functions)
             self.function = functions
         else:
             raise TypeError
-
         self.input_nodes = []
         self.output_nodes = []
 
@@ -46,6 +47,9 @@ class AutoDiff:
 
         :return: function value
         """
+        assert isinstance(x, (float, int, list, np.ndarray))
+        if isinstance(x, (list, np.ndarray)):
+            assert len(x) != 1, "Scalar input x must not be an array or list."
         f = np.array([f_i(x) for f_i in self.function])
         if self.f_dim == 1:
             return f[0]
@@ -62,7 +66,7 @@ class AutoDiff:
         return input_nodes
 
     def df(self, x, method="forward", seed=None):
-        assert isinstance(x, (float, int, list))
+        assert isinstance(x, (float, int, list, np.ndarray))
         if isinstance(x, (float, int)):
             input_vector = [x]
 
@@ -173,10 +177,11 @@ class Node:
             self.name = name
         else:
             raise TypeError("Node name must be an integer")
-        if isinstance(value, (float, int)):
-            self.value = value
-        else:
-            raise TypeError("Node value must be an integer or float")
+        try:
+            float(value)
+        except:
+            raise TypeError("Node value must be float or integer")
+        self.value = value
         self.parents = parents
         if child:
             self.child = child
