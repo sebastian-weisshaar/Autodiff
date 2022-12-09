@@ -51,6 +51,16 @@ class AutoDiff:
             return f[0]
         return f
 
+    def create_input_nodes(self, input_vector, seed=None):
+        if seed is None:
+            seed = np.ones(self.x_dim)
+        input_nodes = []
+        for i in range(self.x_dim):
+            node = Node((i + 1) - self.x_dim, input_vector[i], for_deriv=seed[i])
+            input_nodes.append(node)
+        input_nodes = [copy.deepcopy(input_nodes) for _ in range(self.f_dim)]
+        return input_nodes
+
     def df(self, x, method="forward", seed=None):
         assert isinstance(x, (float, int, list))
         if isinstance(x, (float, int)):
@@ -59,28 +69,30 @@ class AutoDiff:
         else:
             input_vector = x
         self.x_dim = len(input_vector)
-
-        self.input_nodes = []
         self.output_nodes = []
-        # Set seed vector
-        if not seed:
-            self.seed = np.ones(self.x_dim)
-        else:
-            assert len(seed) == self.x_dim, "The seed vector must be the same shape as the input x"
-
-        for i in range(self.x_dim):
-            node = Node((i + 1) - self.x_dim, input_vector[i], for_deriv=self.seed[i])
-            self.input_nodes.append(node)
-
-        if self.f_dim > 1:
-            self.input_nodes = [copy.deepcopy(self.input_nodes) for _ in range(self.f_dim)]
 
         if method == "forward":
-            return self._forward()
+            output = np.zeros((self.f_dim, self.x_dim))
+            jac_seed_matrix = np.identity(self.x_dim)
+            for i in range(self.x_dim):
+                jac_seed = jac_seed_matrix[i, :]
+                self.input_nodes = self.create_input_nodes(input_vector, jac_seed)
+                output[:, i] = self._forward()
+                self.output_nodes = []
+
         elif method == "backward":
-            return self._backward()
+            self.input_nodes = self.create_input_nodes(input_vector)
+            output = self._backward()
         else:
             raise TypeError
+
+        if seed:
+            assert len(seed) == self.x_dim, "The seed vector must be the same shape as the input x"
+            output = output @ np.asarray(seed)
+
+        if self.x_dim == 1 and self.f_dim == 1:
+            return output.flatten()[0]
+        return output
 
     def _forward(self):
         """
@@ -91,7 +103,7 @@ class AutoDiff:
 
         for function_i, input_node in zip(self.function, self.input_nodes):
 
-            if self.x_dim == 1 and self.f_dim > 1:
+            if self.x_dim == 1: # and self.f_dim > 1
                 input_node = input_node[0]
 
             output_node = function_i(input_node)
@@ -125,13 +137,9 @@ class AutoDiff:
             recur_update(output_node)
 
         adjoints = np.zeros((self.f_dim, self.x_dim))
-        if self.f_dim > 1:
-            for i, input_node in zip(range(self.f_dim), self.input_nodes):
-                adjoints[i] = np.array([input_parameter_xi.adjoint for input_parameter_xi in input_node])
-        else:
-            adjoints = np.array([input_parameter_xi.adjoint for input_parameter_xi in self.input_nodes])
-        backward_deriv = adjoints @ np.array(self.seed)
-        return backward_deriv
+        for i, input_node in zip(range(self.f_dim), self.input_nodes):
+            adjoints[i] = np.array([input_parameter_xi.adjoint for input_parameter_xi in input_node])
+        return adjoints
 
     def __call__(self, x, method='forward'):
         if method == 'forward':
