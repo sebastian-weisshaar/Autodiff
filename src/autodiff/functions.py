@@ -299,6 +299,7 @@ def exp(var, base = np.e):
     else:
         raise TypeError
 
+
 def log(var, base = np.e):
     """
         Logarithm operator returns the logarithm of var object.
