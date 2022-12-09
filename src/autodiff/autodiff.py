@@ -46,7 +46,10 @@ class AutoDiff:
 
         :return: function value
         """
-        return np.array([f_i(x) for f_i in self.function])
+        f = np.array([f_i(x) for f_i in self.function])
+        if self.f_dim == 1:
+            return f[0]
+        return f
 
     def df(self, x, method="forward", seed=None):
         assert isinstance(x, (float, int, list))
@@ -99,8 +102,10 @@ class AutoDiff:
         for output_node in self.output_nodes:
             output_node.adjoint = 1
             for_deriv.append(output_node.for_deriv)
-
-        return np.array(for_deriv)
+        for_deriv = np.array(for_deriv)
+        if self.f_dim == 1:
+            return for_deriv[0]
+        return for_deriv
 
     def _backward(self):
         """
@@ -125,9 +130,17 @@ class AutoDiff:
                 adjoints[i] = np.array([input_parameter_xi.adjoint for input_parameter_xi in input_node])
         else:
             adjoints = np.array([input_parameter_xi.adjoint for input_parameter_xi in self.input_nodes])
-
         backward_deriv = adjoints @ np.array(self.seed)
-        return np.asarray(backward_deriv)
+        return backward_deriv
+
+    def __call__(self, x, method='forward'):
+        if method == 'forward':
+            df = self.df(x)
+        elif method == 'backward':
+            df = self.df(x, method=method)
+        else:
+            raise TypeError("Method supported is either 'forward' or 'backward'")
+        return self.f(x), df
 
 
 class Node:
@@ -335,6 +348,56 @@ class Node:
             New node resulting from the multiplication
         """
         return self.__mul__(other)
+
+    def __pow__(self, other):
+        """
+        power between node and other
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object to multiply node by
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from the multiplication
+        """
+        if isinstance(other, Node):
+            new_name = self.__new_name__()
+            value = self.value ** other.value
+            for_deriv = other.value*self.value**(other.value-1)*self.for_deriv + \
+                        np.log(self.value)*self.value**other.value*other.for_deriv
+            back_deriv = {self.name: other.value*self.value ** (other.value-1),
+                          other.name: np.log(self.value)*self.value**other.value}
+            parents = [self, other]
+            new_node = Node(new_name, value, for_deriv=for_deriv, back_deriv=back_deriv,
+                            parents=parents)
+            other.child.append(new_node)
+
+        elif isinstance(other, (float, int)):
+            new_name = self.__new_name__()
+            value = self.value ** other
+            for_deriv = other*self.value ** (other-1)*self.for_deriv
+            back_deriv = {self.name: other*self.value ** (other-1)}
+            parents = [self]
+            new_node = Node(new_name, value, for_deriv=for_deriv, back_deriv=back_deriv,
+                            parents=parents)
+        else:
+            raise TypeError
+        self.child.append(new_node)
+        return new_node
+
+    def __rpow__(self, other):
+        new_name = self.__new_name__()
+        value = other ** self.value
+        for_deriv = self.for_deriv * np.log(other) * other ** self.value
+        back_deriv = {self.name: np.log(other) * other ** self.value}
+        parents = [self]
+        new_node = Node(new_name, value, for_deriv=for_deriv, back_deriv=back_deriv,
+                        parents=parents)
+        self.child.append(new_node)
+        return new_node
 
     def __truediv__(self, other):
         """
