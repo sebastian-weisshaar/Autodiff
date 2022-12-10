@@ -55,7 +55,7 @@ class AutoDiff:
             return f[0]
         return f
 
-    def create_input_nodes(self, input_vector, seed=None):
+    def _create_input_nodes(self, input_vector, seed=None):
         if seed is None:
             seed = np.ones(self.x_dim)
         input_nodes = []
@@ -80,12 +80,12 @@ class AutoDiff:
             jac_seed_matrix = np.identity(self.x_dim)
             for i in range(self.x_dim):
                 jac_seed = jac_seed_matrix[i, :]
-                self.input_nodes = self.create_input_nodes(input_vector, jac_seed)
+                self.input_nodes = self._create_input_nodes(input_vector, jac_seed)
                 output[:, i] = self._forward()
                 self.output_nodes = []
 
         elif method == "backward":
-            self.input_nodes = self.create_input_nodes(input_vector)
+            self.input_nodes = self._create_input_nodes(input_vector)
             output = self._backward()
         else:
             raise TypeError
@@ -440,7 +440,7 @@ class Node:
             new_name = self.__new_name__()
             value = self.value / other
             for_deriv = self.for_deriv / other
-            back_deriv = {self.name: 1}
+            back_deriv = {self.name: 1/other}
             parents = [self]
             new_node = Node(new_name, value, for_deriv=for_deriv, back_deriv=back_deriv,
                             parents=parents)
@@ -500,7 +500,7 @@ class Node:
             return False
         raise TypeError("Please compare Node with Node")
 
-    def __str__(self):
+    """def __str__(self):
         str_output = f'Name: {self.name}'
         if self.value:
             str_output += f'\nValue: {self.value}'
@@ -509,4 +509,4 @@ class Node:
         if self.parents:
             str_output += f'\nParents: {[parent.name for parent in self.parents]}'
         str_output += f'\nAdjoint: {[self.adjoint]}'
-        return str_output
+        return str_output"""

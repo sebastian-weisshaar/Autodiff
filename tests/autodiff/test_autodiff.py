@@ -20,59 +20,94 @@ class TestAutoDiff:
 
     def test_init(self):
         """Test initialization of AutoDiff class"""
-        def f_test(x):
-            x1, x2, x3 = x[0], x[1], x[2]
-            return x1 * x2 - x3 / x2 + 3 * x3
-    
-        seed = [0, 0, 1]
-        input_parameters = [2, 4, 6]
-        test_AD = AutoDiff(f_test, input_parameters, seed)
-
-
-
-        #assert test_AD.f == f_test
-        assert test_AD.input_parameters[0] == Node(-2, 2,for_deriv=0)
-        assert test_AD.input_parameters[1] == Node(-1, 4,for_deriv=0)
-        assert test_AD.input_parameters[2] == Node(0, 6,for_deriv=1)
-        assert test_AD.seed == seed
-        assert test_AD.p_dim == 3
-        assert not test_AD.output_nodes
-        assert not test_AD.f_dim 
+        pass
 
 
 
 
-    def test_forward(self):
-        """Test forward mode derivative of AutoDiff class"""
-        def f_test(x):
-            x1, x2, x3 = x[0], x[1], x[2]
-            return x1 * x2 - x3 / x2 + 3 * x3
-        
-        def f_test2(x):
-            x1, x2, x3 = x[0], x[1], x[2]
-            return [x1 * x2 - x3 / x2 + 3 * x3, x3*x1/x2 +x2+4*x3]
+    def test_derivative(self):
+        """Test forward and reverse mode derivative of AutoDiff class"""
+
+        # 1d input, 1d output
+        def f(x):
+            return x**2+3*x
+        ad=AutoDiff(f)
+        assert ad.f(1)==4
+        assert ad.df(1)==5
+        assert ad.df(1)==5
+        assert ad.df(1,method="backward")==5
+        assert ad.df(1,method="backward")==5
+
+        # 1d input multi output
+        def f1(x):
+            return 2*x
+        def f2(x):
+            return 3*x
+        ad=AutoDiff([f1,f2])
+        input=4
+        answer_f=[8,12]
+        answer_df=[[2],[3]]
+        ad_answer=ad.f(input)
+        ad_answer_df=ad.df(input)
+
+        ad_answer_df_bw=ad.df(input,method="backward")
+        assert all([answer_f[i]==ad_answer[i] for i in range(2)])
+        assert all([all(ad_answer_df[i][x]==answer_df[i][x] for x in range(1)) for i in range(2)])
+        assert all([all(ad_answer_df_bw[i][x]==answer_df[i][x] for x in range(1)) for i in range(2)])
 
 
-        seed = [0, 0, 1]
-        input_parameters = [2, 4, 6]
-        test_AD1 = AutoDiff(f_test, input_parameters, seed)
-        test_AD2= AutoDiff(f_test2,input_parameters,seed)
+        # Multi d input, 1-d output
+        def f(x):
+            return x[0]*2+x[1]*3
+        input=[1,2]
+        ad=AutoDiff(f)
+        ad_answer=ad.f(input)
+        ad_answer_df=ad.df(input)
+        ad_answer_df_bw=ad.df(input,method="backward")
+        answer_f=8
+        answer_df=[[2,3]]
+        assert ad_answer==answer_f
+        assert all([all(ad_answer_df[i][x]==answer_df[i][x] for x in range(2)) for i in range(1)])
+        assert all([all(ad_answer_df_bw[i][x]==answer_df[i][x] for x in range(2)) for i in range(1)])
+       
 
-        assert test_AD1.forward() == -1 / 4 + 3
-        assert test_AD2.forward() == [-1 / 4 + 3, 4.5]
+        # Multi d input multi d output
+        def f1(x):
+            return x[0]*1+x[1]/4
+        def f2(x):
+            return x[0]**2+x[1]+1
 
+        input=[1,4]
+        ad=AutoDiff([f1,f2])
+        ad_answer=ad.f(input)
+        ad_answer_df=ad.df(input)
+        ad_answer_df_bw=ad.df(input,method="backward")
+        answer_f=[2,6]
+        answer_df=[[1,0.25],[2,1]]
+        assert all([ad_answer[i]==answer_f[i] for i in range(len(answer_f))])
+        assert all([all(ad_answer_df[i][x]==answer_df[i][x] for x in range(2)) for i in range(2)])
+        assert all([all(ad_answer_df_bw[i][x]==answer_df[i][x] for x in range(2)) for i in range(2)])
 
     def test_function_value(self):
         """Test fiunction value of AutoDiff class"""
-        def f_test(x):
-            x1, x2, x3 = x[0], x[1], x[2]
-            return x1 * x2 - x3 / x2 + 3 * x3
+    
+    def test_dunder_call(self):
+        def f1(x):
+            return x[0]*1+x[1]/4
+        def f2(x):
+            return x[0]**2+x[1]+1
 
-        seed = [0, 0, 1]
-        input_parameters = [2, 4, 6]
-        test_AD = AutoDiff(f_test, input_parameters, seed)
-        assert test_AD.function_value() == f_test(input_parameters)
-
+        input=[1,4]
+        ad=AutoDiff([f1,f2])
+        ad_answer,ad_answer_df=ad(input)
+        ad_answer,ad_answer_df_bw=ad(input,method="backward")
+        
+        answer_f=[2,6]
+        answer_df=[[1,0.25],[2,1]]
+        assert all([ad_answer[i]==answer_f[i] for i in range(len(answer_f))])
+        assert all([all(ad_answer_df[i][x]==answer_df[i][x] for x in range(2)) for i in range(2)])
+        assert all([all(ad_answer_df_bw[i][x]==answer_df[i][x] for x in range(2)) for i in range(2)])
+        
 
 class TestNode:
     # TODO improve testing of name of new nodes in operations
@@ -261,7 +296,7 @@ class TestNode:
         assert node_4.name != node_1.name
         assert node_4.value == node_1.value / constant
         assert node_4.for_deriv == node_1.for_deriv / constant
-        assert node_4.back_deriv == {node_1.name: 1}
+        assert node_4.back_deriv == {node_1.name: 1/constant}
         assert node_4 in node_1.child
         assert node_4.parents == [node_1]
 
@@ -277,14 +312,52 @@ class TestNode:
         with pytest.raises(TypeError):
             node_1/'4'
     
-    def test_printing(self,capsys):
+    def test_power(self):
+        """Test division dunder method of Node class"""
+        name_1, name_2 = 3, 4
+        value_1, value_2 = 2.0, 4.3
+        for_deriv_1, for_deriv_2 = 2.1, 3.01
+        node_1 = Node(name_1, value_1, for_deriv=for_deriv_1)
+        node_2 = Node(name_2, value_2, for_deriv=for_deriv_2)
+        node_3 = node_1 ** node_2
+        assert node_3.value == node_1.value ** node_2.value
+        assert node_3.name != node_1.name or node_3.name != node_2.name
+        assert node_3.for_deriv == node_2.value*node_1.value**(node_2.value-1)*node_1.for_deriv + \
+                        np.log(node_1.value)*node_1.value**node_2.value*node_2.for_deriv
+        assert node_3.back_deriv == {node_1.name: node_2.value*node_1.value ** (node_2.value-1),
+                          node_2.name: np.log(node_1.value)*node_1.value**node_2.value}
+        assert node_3 in node_1.child
+        assert node_3 in node_2.child
+        assert node_3.parents == [node_1, node_2]
+
+        node_1 = Node(name_1, value_1, for_deriv=for_deriv_1)
+
+        constant = 19
+        node_5 = constant**node_1
+        assert node_5.name != node_1.name
+        assert node_5.value == constant**node_1.value
+        assert node_5.for_deriv == node_1.for_deriv*node_1.value*constant**(node_1.value-1)
+        assert node_5.back_deriv == {node_1.name: node_1.value*constant**(node_1.value-1)}
+        assert node_5 in node_1.child
+        assert node_5.parents == [node_1]
+
+        
+        with pytest.raises(TypeError):
+            node_1**'4'
+    
+    
+    '''def test_printing(self,capsys):
         """Test printing dunder method of Node class"""
         test_child=Node(2,100)
         test_parent=Node(0,200)
         test_node=Node(1,10,child=[test_child],parents=[test_parent])
+        name_node=test_node.name
+        print(name_node)
         print(test_node)
         captured = capsys.readouterr()
-        assert captured.out == "Name: 1\nValue: 10\nChildren: [2]\nParents: [0]\n"
+        assert captured.out == f"1\nName: 1\nValue: 1\nChildren: [2]\nParents: [0]\n"
+    
+        '''
 
         
 

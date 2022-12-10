@@ -81,7 +81,7 @@ class TestFunction:
         test_number1=np.random.uniform(p1,p2)
         test_number2=np.random.randint(p1,p2)
 
-        assert new_node.name==test_node.name+1
+        #assert new_node.name==test_node.name+1
         assert new_node.value==number_equivalent(test_node.value)
         deriv=np.round(derivative(test_node.value),10)
         assert np.round(new_node.back_deriv[test_node.name],10)==deriv
