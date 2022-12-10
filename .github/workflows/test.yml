@@ -23,6 +23,8 @@ jobs:
         run: pip install pytest pytest-cov numpy
       - name: Deploy test suite
         run: cd tests
+      - name: Show files
+        run: ls -al
       - name: Run Tests
         run: ./run_tests.sh 'coverage'
       
