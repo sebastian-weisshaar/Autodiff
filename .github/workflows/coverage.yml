@@ -33,7 +33,7 @@ jobs:
       - name: Deploy test coverage GitHub page
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: cov_html
+          folder: tests/cov_html
         
     
       
