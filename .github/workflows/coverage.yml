@@ -26,8 +26,10 @@ jobs:
         run: pip install pytest pytest-cov numpy
       - name: Change into test folder and run test_harness
         run: (cd tests && ./run_tests.sh 'coverage')
+      - name: Show files in cov_test
+        run: (cd tests/cov_html && ls -al )
       - name: Clean .gitignore in coverage output
-        run: rm -f cov_html/.gitignore
+        run: rm -f tests/cov_html/.gitignore
 
       # Deploy to gh-pages branch
       - name: Deploy test coverage GitHub page
