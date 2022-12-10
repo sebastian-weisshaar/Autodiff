@@ -36,22 +36,24 @@ pip install autodiff-NARS
 | Division             | x/y     |
 | Power                | x**2    |
 | Subtraction          | x-y     |
+| Negative             | -x      |
 
 # Supported Unary Functions
 
-| **Unary Functions** | **Example**       |
+| **Unary Function**  | **Example**       |
 |---------------------|-------------------|
 | sin                 | sin(x)            |
 | cos                 | cos(x)            |
 | tan                 | tan(x)            |
 | arcsin              | arcsin(x)         |
-| arcos               | arcos(x)          |
+| arccos              | arccos(x)         |
 | arctan              | arctan(x)         |
 | sinh                | sinh(x)           |
+| cosh                | cosh(x)           |
 | tanh                | tanh(x)           |
 | sqrt                | sqrt(x)           |
-| exp (any base)      | exp(x, base = e)  |
-| log (any base)      | log(x, base = e)  |
+| exp (any base)      | exp(x, base = np.e)  |
+| log (any base)      | log(x, base = np.e)  |
 | sigmoid             | sigmoid(x)        |
 
 
@@ -119,7 +121,7 @@ print(df_backward)
 > [[ 1.        -0.9899925  1.       ]]
 ```
 
-It is possible to run the above examples by: 
+Above examples and including two more can be run by: 
 ```Python
 from autodiff-NARS import demo
 demo()
