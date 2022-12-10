@@ -177,6 +177,7 @@ class Node:
             self.name = name
         else:
             raise TypeError("Node name must be an integer")
+            
         try:
             float(value)
         except:

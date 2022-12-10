@@ -20,10 +20,7 @@ class TestAutoDiff:
 
     def test_init(self):
         """Test initialization of AutoDiff class"""
-        pass
-
-
-
+        
 
     def test_derivative(self):
         """Test forward and reverse mode derivative of AutoDiff class"""
@@ -77,6 +74,8 @@ class TestAutoDiff:
         def f2(x):
             return x[0]**2+x[1]+1
 
+        seed=[1,0]   
+
         input=[1,4]
         ad=AutoDiff([f1,f2])
         ad_answer=ad.f(input)
@@ -84,6 +83,10 @@ class TestAutoDiff:
         ad_answer_df_bw=ad.df(input,method="backward")
         answer_f=[2,6]
         answer_df=[[1,0.25],[2,1]]
+
+        ad_seed=ad.df(input,method="backward",seed=seed)
+        df_seed=[1,2]
+        assert all([ad_seed[i]==df_seed[i] for i in range(2)])
         assert all([ad_answer[i]==answer_f[i] for i in range(len(answer_f))])
         assert all([all(ad_answer_df[i][x]==answer_df[i][x] for x in range(2)) for i in range(2)])
         assert all([all(ad_answer_df_bw[i][x]==answer_df[i][x] for x in range(2)) for i in range(2)])
@@ -155,7 +158,9 @@ class TestNode:
 
         with pytest.raises(TypeError):
             Node('name', 3)
-            Node(1.0, 3)
+            #Node(1.0, 3)
+        with pytest.raises(TypeError):
+            Node(1,["Wrong value input for node"])
 
     def test_equality(self):
         """Test equality dunder method of Node class"""
@@ -336,8 +341,8 @@ class TestNode:
         node_5 = constant**node_1
         assert node_5.name != node_1.name
         assert node_5.value == constant**node_1.value
-        assert node_5.for_deriv == node_1.for_deriv*node_1.value*constant**(node_1.value-1)
-        assert node_5.back_deriv == {node_1.name: node_1.value*constant**(node_1.value-1)}
+        assert node_5.for_deriv == node_1.for_deriv * np.log(constant) * constant ** node_1.value
+        assert node_5.back_deriv == {node_1.name: np.log(constant) * constant ** node_1.value}
         assert node_5 in node_1.child
         assert node_5.parents == [node_1]
 
