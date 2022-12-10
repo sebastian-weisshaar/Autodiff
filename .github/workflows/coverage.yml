@@ -26,13 +26,11 @@ jobs:
         run: pip install pytest pytest-cov numpy
       - name: Test coverage of 90%
         run: pytest --cov=src/autodiff --cov-fail-under=90 --cov-report html:cov_html
-      - name: Clean .gitignore in coverage output
-        run: rm -f tests/cov_html2/.gitignore
-      - name: Deploy test coverage GitHub page
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: tests/cov_html/
-      
+      - name: Check for files
+        run: ls -al
+      - name: Check for files in test
+        run: ls -al ./tests/
+        
     
       
        
