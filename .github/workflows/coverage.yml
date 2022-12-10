@@ -25,7 +25,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install pytest pytest-cov numpy
       - name: Change into test folder and run test_harness
-        run: (cd tests && ./run_test.sh 'coverage')
+        run: (cd tests && ./run_tests.sh 'coverage')
       - name: Clean .gitignore in coverage output
         run: rm -f cov_html/.gitignore
 
