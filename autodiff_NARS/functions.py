@@ -1,5 +1,5 @@
 import numpy as np 
-from autodiff import Node 
+from autodiff_NARS import Node 
 
 #Completed functions: sin,cos,tan,arcsin,arcos, arctan, sinh,cosh,tanh, sqrt, exp, log, sigmoid
 #TODO: Docstrings, commented code

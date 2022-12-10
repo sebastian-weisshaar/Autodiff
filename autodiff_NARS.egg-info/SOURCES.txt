@@ -1,0 +1,11 @@
+LICENSE
+README.md
+pyproject.toml
+src/autodiff/__init__.py
+src/autodiff/autodiff.py
+src/autodiff/functions.py
+src/autodiff/demo/demo.py
+src/autodiff_NARS.egg-info/PKG-INFO
+src/autodiff_NARS.egg-info/SOURCES.txt
+src/autodiff_NARS.egg-info/dependency_links.txt
+src/autodiff_NARS.egg-info/top_level.txt

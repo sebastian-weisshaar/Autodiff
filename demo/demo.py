@@ -1,5 +1,5 @@
-import autodiff as AD
-from functions import *
+import autodiff_NARS.autodiff as AD
+import autodiff_NARS.functions import *
 
 def demo():
     print("SCENARIO 1: Single (callable) Function + Scalar Input")
