@@ -94,7 +94,8 @@ $$f(\boldsymbol{x})=\log(x_1) + \sin(x_2) + x_3$$
 
 We demonstrate how to find the function value, Jacobian using reverse mode, and the partial derivative of $\frac{\partial f}{\partial x_1}$ using forward mode at point $x =[1,3,5]$ .
 
-In order to obtain the partial derivative (or direction derivative), the user must specify a seed vector. The seed vector must be of the same dimensions as the input vector. 
+In order to obtain the partial derivative (or direction derivative), the user must specify a seed vector. The seed vector must be of the same dimensions as the input vector. Specific to this example, to find the partial derivative with respect to $x_1$ the seed vector would be $[1,0,0].$
+
 
 ```Python
 import autodiff as AD
@@ -118,7 +119,55 @@ print(df_backward)
 > [[ 1.        -0.9899925  1.       ]]
 ```
 
-Above examples and including two more can be run by: 
+
+**Example 3:** 
+
+Given the multivariate function: 
+
+$$f(\boldsymbol{x})=\begin{bmatrix}
+\log(x_1) + \sin(x_2) + x_3\\ 
+\sinh(x_1)*\exp(x_2) - x_3\\ 
+x_1*\sin(x_2)/x_3
+\end{bmatrix}$$
+
+We demonstrate how to find the function value, Jacobian using reverse mode, and the partial derivative of $\frac{\partial f}{\partial x_1}$ using forward mode at point $x =[1,3,5]$ .
+
+To create a multivariate function, the user must first define the individual functions and place them in a list. 
+
+```Python
+import autodiff as AD
+from functions import sin,log, sinh, exp
+
+def f1(x):
+    return log(x[0]) + sin(x[1]) + x[2]
+
+def f2(x):
+    return sinh(x[0]) * exp(x[1]) - x[2]
+
+def f3(x):
+    return x[0] * sin(x[1]) / x[2]
+
+input = [1, 3 , 5] 
+ad = AD.AutoDiff([f1, f2, f3]) 
+function_value = ad.f(x=input)
+dfdx1 = ad.df(x=input, seed = [1, 0, 0]) 
+df_backward = ad.df(x=input, method = 'backward') 
+
+
+print(function_value)
+> [ 5.14112001 18.60454697  0.028224  ]
+print(dfdx1)
+> [1.00000000e+00 3.09936031e+01 2.82240016e-02]
+print(df_backward)
+> [[ 1.00000000e+00 -9.89992497e-01  1.00000000e+00]
+   [ 3.09936031e+01  2.36045470e+01 -1.00000000e+00]
+   [ 2.82240016e-02 -1.97998499e-01 -5.64480032e-03]]
+```
+
+
+
+
+Above examples and  more can be run by: 
 ```Python
 from autodiff-NARS import demo
 demo()
