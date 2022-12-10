@@ -7,9 +7,9 @@
 
 # autodiff-NARS
 
-**An automatic differentiation package implementing forward and reverse mode**
+**An automatic differentiation package implementing forward and reverse mode**.
 
-Please refer to `docs/documentation.ipynb` for more details
+Please refer to `docs/documentation.ipynb` for more details.
 
 
 | Group Members       | Emails                              |
@@ -61,10 +61,10 @@ pip install autodiff-NARS
 
 **Example 1:** 
 
-Given the scalar function 
+Given the scalar function: 
 $$f(x) = \log(x) + \sin(x)$$
 
-Below we demonstrate how to calculate the function value and derivative using both forward and backward mode at $x=1$.
+We demonstrate how to calculate the function value and derivative using both forward and backward mode at $x=1$.
 
 ```Python
 import autodiff as AD
@@ -92,9 +92,9 @@ Given the function:
 
 $$f(\boldsymbol{x})=\log(x_1) + \sin(x_2) + x_3$$
 
-Below we demonstrate how to find the function value, Jacobian using reverse mode and partial derivative of $\frac{\partial f}{\partial x_1}$ using forward mode at point $x =[1,3,5]$ .
+We demonstrate how to find the function value, Jacobian using reverse mode, and the partial derivative of $\frac{\partial f}{\partial x_1}$ using forward mode at point $x =[1,3,5]$ .
 
-In order to obtain the partial derivative (or direction derivative), the user must specify a seed vector. The seed must be of the same dimensions as the input vector. 
+In order to obtain the partial derivative (or direction derivative), the user must specify a seed vector. The seed vector must be of the same dimensions as the input vector. 
 
 ```Python
 import autodiff as AD
@@ -107,7 +107,6 @@ input = [1, 3 , 5]
 ad = AD.AutoDiff(f) 
 function_value = ad.f(x=input) 
 dfdx1 = ad.df(x=input, seed = [1, 0, 0]) 
-df_forward = ad.df(x=input) 
 df_backward = ad.df(x=input, method = 'backward')
 
 
@@ -115,8 +114,6 @@ print(function_value)
 > 5.141120008059867
 print(dfdx1)
 > [1.]
-print(df_forward)
-> [[ 1.        -0.9899925  1.       ]]
 print(df_backward)
 > [[ 1.        -0.9899925  1.       ]]
 ```
