@@ -237,12 +237,10 @@ class Node:
             raise TypeError("Forward mode derivative must be float or integer")
         self.for_deriv = for_deriv
 
-        try:
-            float(back_deriv)
-        except:
+        if isinstance(back_deriv, dict):
+            self.back_deriv = back_deriv
+        else:
             raise TypeError("Backward mode derivative must be float or integer")
-        self.back_deriv = back_deriv  # derivative of current node with respect to parents
-
         self.adjoint = 0
 
     def __add__(self, other):
