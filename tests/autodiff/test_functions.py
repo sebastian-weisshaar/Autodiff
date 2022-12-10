@@ -12,6 +12,7 @@ class TestFunction:
         """Function to create a test node"""
         p1, p2 = value_range
         value = np.random.choice([np.random.uniform(p1, p2), np.random.randint(p1, p2)])
+        #value=np.random.randint(p1, p2)
         for_deriv = np.random.choice([np.random.normal(12, 10), np.random.randint(-200, 300)])
         test_node = Node(np.random.randint(-1, 1000), value, [], [], for_deriv, {})
         return test_node
@@ -65,7 +66,7 @@ class TestFunction:
 
     def test_sqrt(self):
         """Apply helper_test on the sqrt function"""
-        self.helper_test(sqrt, np.sqrt, lambda x: 0.5 * (x ** (-0.5)), input_range=[0, 100])
+        self.helper_test(sqrt, np.sqrt, lambda x: 0.5 * (x ** (-0.5)), input_range=[0.1, 100],derivative_range=[0.1,100])
 
 
     def test_exp(self):
@@ -112,7 +113,7 @@ class TestFunction:
 
     def test_arccos(self):
         """Apply helper_test on the arccos function"""
-        self.helper_test(arccos, np.arccos, lambda x: -1 / (np.sqrt(1 - x ** 2)), input_range=[-1, 1])
+        self.helper_test(arccos, np.arccos, lambda x: -1 / (np.sqrt(1 - x ** 2)), input_range=[-1,1])
 
     def test_arctan(self):
         """Apply helper_test on the arctan function"""

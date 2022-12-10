@@ -366,15 +366,4 @@ class TestNode:
         with pytest.raises(TypeError):
             node_1 ** '4'
 
-    '''def test_printing(self,capsys):
-        """Test printing dunder method of Node class"""
-        test_child=Node(2,100)
-        test_parent=Node(0,200)
-        test_node=Node(1,10,child=[test_child],parents=[test_parent])
-        name_node=test_node.name
-        print(name_node)
-        print(test_node)
-        captured = capsys.readouterr()
-        assert captured.out == f"1\nName: 1\nValue: 1\nChildren: [2]\nParents: [0]\n"
     
-        '''
