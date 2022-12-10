@@ -23,7 +23,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install pytest pytest-cov numpy
       - name: Test coverage of 90%
-        run: pytest --cov=src/autodiff --cov-fail-under=90
+        run: pytest --cov=src/autodiff --cov-fail-under=90 --cov-report html:cov_html
       
     
       
