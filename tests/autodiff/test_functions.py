@@ -122,7 +122,7 @@ class TestFunction:
     
     def test_sqrt(self):
         """Apply helper_test on the sqrt function"""
-        self.helper_test(sqrt,np.sqrt,lambda x: 0.5*(x**(-0.5)),input_range=[0,100])
+        self.helper_test(sqrt,np.sqrt,lambda x: 0.5*(x**(-0.5)),input_range=[0.1,100],derivative_range=[0.1,100])
     
     def test_exp(self):
         """Apply helper_test on the sqrt function"""
