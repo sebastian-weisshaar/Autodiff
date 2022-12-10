@@ -23,8 +23,3 @@ jobs:
         run: pip install pytest pytest-cov numpy
       - name: Deploy test suite
         run: (cd tests && ls -al && ./run_tests.sh 'test')
-      
-    
-    
-      
-       
