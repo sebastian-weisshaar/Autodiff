@@ -20,7 +20,9 @@ class TestAutoDiff:
 
     def test_init(self):
         """Test initialization of AutoDiff class"""
-        
+        with pytest.raises(TypeError):
+            f=["Wrong type of function input"]
+            ad=AutoDiff(f)
 
     def test_derivative(self):
         """Test forward and reverse mode derivative of AutoDiff class"""
