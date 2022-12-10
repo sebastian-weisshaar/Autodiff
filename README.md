@@ -123,3 +123,11 @@ Above examples and including two more can be run by:
 from autodiff-NARS import demo
 demo()
 ```
+
+# Broader Impact & Inclusivity Statement
+
+### **Broader Impact**
+Our software enables a user to efficiently compute the automatic derivative of a complex function. There is a risk that this could be used by users to negatively impact society. For example one can use AD to find the optimal adversarial perturbation to a street sign to confuse self-driving vehicles, or to optimize energy efficiency of nuclear weapons. There are many other examples of misuse that would result in harm to human life. There are also examples of how the user may use the code to positively contribute to society. For example, training a neural network that leads to discovery of a beneficial drug, or optimizing a chemical process to reduce the amount of carbon emissions. We are uncertain of what users of our package will build with it. We will remain knowledgeable of who is using our code, and for what implications. If we see unethical actions, we will report them, and in extreme cases remove our package from PyPI. 
+
+### **Inclusivity**
+We as a team encourage and highly value code contribution from all coders, coming from diverse backgrounds. Examples of contributions that we value include translation of documentation into other languages, help with outreach and onboarding of new contributors, development of tutorials and other educational material. We do however acknowledge that various barriers exist for underrepresented groups in accessing the code base and contributing towards it. We are in the initial stages of the project, but plan to translate the documentation into other languages, and develop more in depth tutorials for how to use the code to improve accessibility.  Currently, pull requests are categorized and then assigned to the team member responsible for the area, for example testing. New pull requests are checked weekly, reviewed, and either approved or denied. If denied, the team member may provide recommended adjustments to the pull request. We plan to involve more people in this process as the project expands, to ensure that all possible contributions are considered. 
