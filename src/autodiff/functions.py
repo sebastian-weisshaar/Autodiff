@@ -21,7 +21,7 @@ def sin(var):
         """
     
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = np.cos(var.value)*var.for_deriv
         back_deriv = {var.name: np.cos(var.value)}
         new_node = Node(new_name, np.sin(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -47,7 +47,7 @@ def cos(var):
             New node resulting from the applying the cosine function
         """
     if isinstance(var, Node):
-        new_name =  var.__new_name__()
+        new_name =  var._new_name()
         for_deriv = -np.sin(var.value)*var.for_deriv
         back_deriv = {var.name: -np.sin(var.value)}
         new_node = Node(new_name, np.cos(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -74,7 +74,7 @@ def tan(var):
             New node resulting from the applying the tangent function
         """
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = (1/np.cos(var.value)**2)*var.for_deriv
         back_deriv = {var.name: 1/np.cos(var.value)**2}
         new_node = Node(new_name, np.tan(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -100,7 +100,7 @@ def arcsin(var):
             New node resulting from the applying the arcsin function
         """
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = (1/np.sqrt(1-(var.value)**2))*var.for_deriv
         back_deriv = {var.name: 1/np.sqrt(1-(var.value)**2)}
         new_node = Node(new_name, np.arcsin(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -113,7 +113,7 @@ def arcsin(var):
 
 def arccos(var):
     """
-        Arcos operator returns the arcos of var object.
+        Arccos operator returns the arcos of var object.
 
         Parameters
         ----------
@@ -126,7 +126,7 @@ def arccos(var):
             New node resulting from the applying the arcos function   
         """
     if isinstance(var, Node):
-        new_name =  var.__new_name__()
+        new_name =  var._new_name()
         for_deriv = (-1/np.sqrt(1-(var.value)**2))*var.for_deriv
         back_deriv = {var.name: -1/np.sqrt(1-(var.value)**2)}
         new_node = Node(new_name, np.arccos(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -153,7 +153,7 @@ def arctan(var):
             New node resulting from the applying the arctan function 
         """
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = (1/(1+(var.value)**2))*var.for_deriv
         back_deriv = {var.name: 1/(1+(var.value)**2)}
         new_node = Node(new_name, np.arctan(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -179,7 +179,7 @@ def sinh(var):
             New node resulting from the applying the sinh function      
         """
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = np.cosh(var.value)*var.for_deriv
         back_deriv = {var.name: np.cosh(var.value)}
         new_node = Node(new_name, np.sinh(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -205,7 +205,7 @@ def cosh(var):
             New node resulting from the applying the cosh function      
         """
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = np.sinh(var.value)*var.for_deriv
         back_deriv = {var.name: np.sinh(var.value)}
         new_node = Node(new_name, np.cosh(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -231,7 +231,7 @@ def tanh(var):
             New node resulting from the applying the tanh function      
         """
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = ((1/np.cosh(var.value))**2)*var.for_deriv
         back_deriv = {var.name: ((1/np.cosh(var.value))**2)}
         new_node = Node(new_name, np.tanh(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -257,7 +257,7 @@ def sqrt(var):
             New node resulting from the applying the square root function      
         """
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = ((1/2)*var.value**(-1/2))*var.for_deriv
         back_deriv = {var.name: ((1/2)*var.value**(-1/2))}
         new_node = Node(new_name, np.sqrt(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -288,7 +288,7 @@ def exp(var, base = np.e):
     if base <= 0:
         raise TypeError
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = (np.log(base)*(base**var.value))*var.for_deriv
         back_deriv = {var.name: (np.log(base)*(base**var.value))}
         new_node = Node(new_name, base**(var.value), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -298,6 +298,7 @@ def exp(var, base = np.e):
         return base**var
     else:
         raise TypeError
+
 
 def log(var, base = np.e):
     """
@@ -318,7 +319,7 @@ def log(var, base = np.e):
     if base <= 0:
         raise TypeError
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = (1/(np.log(base)*var.value))*var.for_deriv
         back_deriv = {var.name: (1/(np.log(base)*var.value))}
         new_node = Node(new_name, np.log(var.value)/np.log(base), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])
@@ -345,7 +346,7 @@ def sigmoid(var):
         """
 
     if isinstance(var, Node):
-        new_name = var.__new_name__()
+        new_name = var._new_name()
         for_deriv = ((np.exp(-var.value))/((np.exp(-var.value)+1)**2))*var.for_deriv
         back_deriv = {var.name: ((np.exp(-var.value))/((np.exp(-var.value)+1)**2))}
         new_node = Node(new_name, 1/(1+np.exp(-var.value)), for_deriv=for_deriv, back_deriv=back_deriv, parents=[var])

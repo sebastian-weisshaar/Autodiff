@@ -14,6 +14,8 @@ jobs:
   test_package:
     name: Test Python implementation of complex numbers
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       
       - uses: actions/checkout@v3
@@ -22,9 +24,17 @@ jobs:
           python-version: '3.10' 
       - name: Install Python dependencies
         run: pip install pytest pytest-cov numpy
-      - name: Test coverage of 90%
-        run: pytest --cov=src/autodiff --cov-fail-under=90
-      
+      - name: Change into test folder and run test_harness
+        run: (cd tests && ./run_tests.sh 'coverage')
+      - name: Clean .gitignore in coverage output
+        run: rm -f cov_html/.gitignore
+
+      # Deploy to gh-pages branch
+      - name: Deploy test coverage GitHub page
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: tests/cov_html
+        
     
       
        
