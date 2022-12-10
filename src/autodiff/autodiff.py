@@ -89,7 +89,7 @@ class AutoDiff:
             self.input_nodes = self._create_input_nodes(input_vector)
             output = self._backward()
         else:
-            raise TypeError
+            raise TypeError("Method supported is either 'forward' or 'backward'")
 
         if seed:
             assert len(seed) == self.x_dim, "The seed vector must be the same shape as the input x"
@@ -487,6 +487,19 @@ class Node:
         return random.getrandbits(64)
 
     def __eq__(self, other):
+        """
+        checks equality between node and other
+
+        Parameters
+        ----------
+        other: Node, float, int
+            Object which is checked to be equal to node
+
+        Returns
+        -------
+        Boolean:
+            True if node is equal to other, else false
+        """
         if isinstance(other, Node):
             s1 = self.name == other.name
             s2 = self.value == other.value
@@ -500,13 +513,21 @@ class Node:
             return False
         raise TypeError("Please compare Node with Node")
 
-    """def __str__(self):
-        str_output = f'Name: {self.name}'
-        if self.value:
-            str_output += f'\nValue: {self.value}'
-        if self.child:
-            str_output += f'\nChildren: {[child.name for child in self.child]}'
-        if self.parents:
-            str_output += f'\nParents: {[parent.name for parent in self.parents]}'
-        str_output += f'\nAdjoint: {[self.adjoint]}'
-        return str_output"""
+    def __neg__(self):
+        """
+        negation of node
+
+        Returns
+        -------
+        new_node: Node
+            New node resulting from negation
+        """
+        new_name = self._new_name()
+        value = - self.value
+        for_deriv = - self.for_deriv
+        back_deriv = {self.name: -1}
+        parents = [self]
+        new_node = Node(new_name, value, for_deriv=for_deriv, back_deriv=back_deriv,
+                        parents=parents)
+        self.child.append(new_node)
+        return new_node
