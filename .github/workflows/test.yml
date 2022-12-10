@@ -22,7 +22,9 @@ jobs:
       - name: Install Python dependencies
         run: pip install pytest pytest-cov numpy
       - name: Deploy test suite
-        run: pytest 
+        run: cd tests
+      - name: Run Tests
+        run: ./run_tests.sh 'coverage'
       
     
       
