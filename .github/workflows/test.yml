@@ -22,7 +22,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install pytest pytest-cov numpy
       - name: Deploy test suite
-        run: cd tests
+        run: (cd tests && ls -al )
       - name: Show files
         run: ls -al
       - name: Run Tests
