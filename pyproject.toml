@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "autodiff-NARS"
-version = "0.1.0"
+name = "autodiff_NARS"
+version = "0.1.2"
 authors = [
   {name="Anna Midgley", email="amidgley@g.harvard.edu" }, {name="Nora Hallqvist", email="nhallqvisthellstadius@g.harvard.edu" },{name="Sebastian Weisshaar", email="sweisshaar@g.harvard.edu" }, {name="Robin Robinson", email="robin_robinson@college.harvard.edu" },
 ]
@@ -16,6 +16,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+
+[tool.setuptools]
+py-modules = ['autodiff_NARS']
 
 [project.urls]
 "Course Team Github Page" = "https://code.harvard.edu/CS107/team19"
