@@ -182,7 +182,7 @@ class TestNode:
 
         with pytest.raises(TypeError):
             node1=="2"
-            
+
 
     def test_addition(self):
         """Test addition dunder method of Node class"""
@@ -337,6 +337,22 @@ class TestNode:
             node_1/'4'
         with pytest.raises(TypeError):
             '4'/node_1
+    def test_negative(self):
+        """Test division dunder method of Node class"""
+        name_1, name_2 = 3, 4
+        value_1, value_2 = 2.0, 4.3
+        for_deriv_1, for_deriv_2 = 2.1, 3.01
+        node_1 = Node(name_1, value_1, for_deriv=for_deriv_1)
+        
+        node_3 = -node_1
+        assert node_3.value == -1*node_1.value
+        assert node_3.name != node_1.name 
+        assert node_3.for_deriv == (-1*node_1.for_deriv)
+        assert node_3.back_deriv == {node_1.name: -1}
+        assert node_3 in node_1.child
+        assert node_3.parents == [node_1]
+
+        
     
     def test_power(self):
         """Test division dunder method of Node class"""
