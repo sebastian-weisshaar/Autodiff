@@ -88,7 +88,7 @@ class AutoDiff:
             self.input_nodes = self._create_input_nodes(input_vector)
             output = self._backward()
         else:
-            raise TypeError
+            raise TypeError("Method supported is either 'forward' or 'backward'")
 
         if seed:
             assert len(seed) == self.x_dim, "The seed vector must be the same shape as the input x"
