@@ -28,6 +28,9 @@ class AutoDiff:
     """
 
     def __init__(self, functions: list):
+        """
+        Instantiate autodiff class with function and its dimension
+        """
         if isinstance(functions, Callable):
             self.f_dim = 1
             self.function = [functions]
@@ -38,9 +41,7 @@ class AutoDiff:
             self.f_dim = len(functions)
             self.function = functions
         else:
-            raise TypeError
-        self.input_nodes = []
-        self.output_nodes = []
+            raise TypeError('Function must either be callable object or list of callable objects')
 
     def f(self, x):
         """
@@ -51,31 +52,29 @@ class AutoDiff:
         assert isinstance(x, (float, int, list, np.ndarray))
         if isinstance(x, (list, np.ndarray)):
             assert len(x) != 1, "Scalar input x must not be an array or list."
+
         f = np.array([f_i(x) for f_i in self.function])
+
         if self.f_dim == 1:
-            return f[0]
+            return f[0]  # flatten output
         return f
 
-    def _create_input_nodes(self, input_vector, seed=None):
-        if seed is None:
-            seed = np.ones(self.x_dim)
-        input_nodes = []
-        for i in range(self.x_dim):
-            node = Node((i + 1) - self.x_dim, input_vector[i], for_deriv=seed[i])
-            input_nodes.append(node)
-        input_nodes = [copy.deepcopy(input_nodes) for _ in range(self.f_dim)]
-        return input_nodes
-
     def df(self, x, method="forward", seed=None):
+        """
+        Computes derivative using either forward or backward mode AD
+
+        :return: derivative value
+        """
         assert isinstance(x, (float, int, list, np.ndarray))
         if isinstance(x, (float, int)):
             input_vector = [x]
-
         else:
             input_vector = x
+
         self.x_dim = len(input_vector)
         self.output_nodes = []
 
+        # compute Jacobian using forward mode
         if method == "forward":
             output = np.zeros((self.f_dim, self.x_dim))
             jac_seed_matrix = np.identity(self.x_dim)
@@ -85,18 +84,21 @@ class AutoDiff:
                 output[:, i] = self._forward()
                 self.output_nodes = []
 
+        # compute Jacobian using backward mode
         elif method == "backward":
             self.input_nodes = self._create_input_nodes(input_vector)
             output = self._backward()
         else:
             raise TypeError("Method supported is either 'forward' or 'backward'")
 
+        # if seed given, calculate directional derivative
         if seed:
             assert len(seed) == self.x_dim, "The seed vector must be the same shape as the input x"
             output = output @ np.asarray(seed)
 
         if self.x_dim == 1 and self.f_dim == 1:
-            return output.flatten()[0]
+            return output.flatten()[0]  # flatten output
+
         return output
 
     def _forward(self):
@@ -127,31 +129,61 @@ class AutoDiff:
     def _backward(self):
         """
         Computes derivative using reverse mode AD
+
+
         :return: derivative value
         """
-
+        # function to recursively update adjoints
         def recur_update(node):
             if node.parents:
                 for parent in node.parents:
                     parent.adjoint += node.adjoint * node.back_deriv[parent.name]
                     recur_update(parent)
 
+        # forward pass
         self._forward()
 
+        # update adjoints
         for output_node in self.output_nodes:
             recur_update(output_node)
 
+        # extract adjoints from output nodes
         adjoints = np.zeros((self.f_dim, self.x_dim))
         for i, input_node in zip(range(self.f_dim), self.input_nodes):
             adjoints[i] = np.array([input_parameter_xi.adjoint for input_parameter_xi in input_node])
         return adjoints
 
     def __call__(self, x, method='forward', seed=None):
+        """
+        Computes the function value and its derivative at x
+
+        :return:
+        f:
+            Function value at x
+        df:
+            Derivative value at x
+        """
         if method == 'forward' or method == 'backward':
             df = self.df(x, method=method, seed=seed)
         else:
             raise TypeError("Method supported is either 'forward' or 'backward'")
         return self.f(x), df
+
+    def _create_input_nodes(self, input_vector, seed=None):
+        """
+        Creates input nodes for each pass of forward
+
+        :return: input nodes
+        """
+        if seed is None:
+            seed = np.ones(self.x_dim)
+        input_nodes = []
+        for i in range(self.x_dim):
+            node = Node((i + 1) - self.x_dim, input_vector[i], for_deriv=seed[i])  # create single input node
+            input_nodes.append(node)
+        input_nodes = [copy.deepcopy(input_nodes) for _ in range(self.f_dim)]  # duplicate input nodes for each function
+        return input_nodes
+
 
 
 class Node:
@@ -172,6 +204,9 @@ class Node:
 
     def __init__(self, name: int, value, child=None, parents=[],
                  for_deriv=1, back_deriv={}):
+        """
+        Create a new node
+        """
         if isinstance(name, int):
             self.name = name
         else:
@@ -182,13 +217,32 @@ class Node:
         except:
             raise TypeError("Node value must be float or integer")
         self.value = value
-        self.parents = parents
+
+        if isinstance(parents, list):
+            assert all([isinstance(parent, Node) for parent in parents]), 'Parents of Node must be list of Nodes'
+            self.parents = parents
+        elif isinstance(parents, Node):
+            self.parents = parents
+        else:
+            raise TypeError('Parents of Node must either be list of Nodes or Node')
+
         if child:
             self.child = child
         else:
             self.child = []
+
+        try:
+            float(for_deriv)
+        except:
+            raise TypeError("Forward mode derivative must be float or integer")
         self.for_deriv = for_deriv
-        self.back_deriv = back_deriv  # deriv of current node with respect to parents
+
+        try:
+            float(back_deriv)
+        except:
+            raise TypeError("Backward mode derivative must be float or integer")
+        self.back_deriv = back_deriv  # derivative of current node with respect to parents
+
         self.adjoint = 0
 
     def __add__(self, other):
@@ -511,7 +565,7 @@ class Node:
             if all([s1, s2, s3, s4, s5, s6, s7]):
                 return True
             return False
-        raise TypeError("Please compare Node with Node")
+        raise TypeError("Node can only be equated with another Node")
 
     def __neg__(self):
         """
