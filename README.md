@@ -165,14 +165,6 @@ print(df_backward)
 ```
 
 
-
-
-Above examples and  more can be run by: 
-```Python
-from autodiff-NARS import demo
-demo()
-```
-
 # Broader Impact & Inclusivity Statement
 
 ### **Broader Impact**
