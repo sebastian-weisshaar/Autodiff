@@ -20,8 +20,11 @@ class TestAutoDiff:
 
     def test_init(self):
         """Test initialization of AutoDiff class"""
+        with pytest.raises(AssertionError):
+            f=["We","We"]
+            ad=AutoDiff(f)
         with pytest.raises(TypeError):
-            f=["Wrong type of function input"]
+            f=2.0
             ad=AutoDiff(f)
 
     def test_derivative(self):
@@ -36,6 +39,10 @@ class TestAutoDiff:
         assert ad.df(1)==5
         assert ad.df(1,method="backward")==5
         assert ad.df(1,method="backward")==5
+
+        with pytest.raises(TypeError):
+            ad=AutoDiff(f)
+            ad.df(1,method="This is not forward or backward")
 
         # 1d input multi output
         def f1(x):
@@ -112,6 +119,9 @@ class TestAutoDiff:
         assert all([ad_answer[i]==answer_f[i] for i in range(len(answer_f))])
         assert all([all(ad_answer_df[i][x]==answer_df[i][x] for x in range(2)) for i in range(2)])
         assert all([all(ad_answer_df_bw[i][x]==answer_df[i][x] for x in range(2)) for i in range(2)])
+
+        with pytest.raises(TypeError):
+            ad_answer,ad_answer_df=ad(input,"This is not forward or backward")
         
 
 class TestNode:
@@ -134,7 +144,7 @@ class TestNode:
         """Test initialization of Node class"""
         name = 1
         value = 3
-        child = []
+        child = Node(300,2)
         parents = []
         for_deriv = 3
         back_deriv = {2: 3, 4: 6}
@@ -169,6 +179,10 @@ class TestNode:
         node1=Node(2,2)
         node2=Node(2,2)
         assert node1==node2
+
+        with pytest.raises(TypeError):
+            node1=="2"
+            
 
     def test_addition(self):
         """Test addition dunder method of Node class"""
@@ -243,6 +257,9 @@ class TestNode:
 
         with pytest.raises(TypeError):
             node_1 - '4'
+        with pytest.raises(TypeError):
+            '4'-node_1 
+        
 
     def test_multiplication(self):
         """Test multiplicatio dunder method of Node class"""
@@ -318,6 +335,8 @@ class TestNode:
 
         with pytest.raises(TypeError):
             node_1/'4'
+        with pytest.raises(TypeError):
+            '4'/node_1
     
     def test_power(self):
         """Test division dunder method of Node class"""

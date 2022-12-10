@@ -32,6 +32,7 @@ class AutoDiff:
             self.f_dim = 1
             self.function = [functions]
         elif isinstance(functions, list):
+            assert all([isinstance(f_i,Callable) for f_i in functions]), "Provide a list of functions to instantiate the AutoDiff class"
             assert len(functions) != 1, "One dimensional function should be provided as a callable object and not a " \
                                         "list "
             self.f_dim = len(functions)
