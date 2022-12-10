@@ -15,7 +15,7 @@ Please refer to `docs/documentation.ipynb` for more details
 | Group Members       | Emails                              |
 |---------------------|-------------------------------------|
 | Nora Hallqvist      | nhallqvisthellstadius@g.harvard.edu |
-| Robin Robinson      | robin_robinson@g.harvard.edu        |
+| Robin Robinson      | robin_robinson@college.harvard.edu        |
 | Anna Midgley        | amidgley@g.harvard.edu              |
 | Sebastian Weisshaar | sweisshaar@g.harvard.edu            |
 
