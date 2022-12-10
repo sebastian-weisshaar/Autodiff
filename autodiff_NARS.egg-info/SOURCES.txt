@@ -1,0 +1,7 @@
+LICENSE
+README.md
+pyproject.toml
+autodiff_NARS.egg-info/PKG-INFO
+autodiff_NARS.egg-info/SOURCES.txt
+autodiff_NARS.egg-info/dependency_links.txt
+autodiff_NARS.egg-info/top_level.txt

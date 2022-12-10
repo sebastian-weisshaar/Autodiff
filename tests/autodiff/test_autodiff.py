@@ -2,8 +2,8 @@ import sys
 import pytest
 import numpy as np
 sys.path.insert(1, '../src/autodiff')
-from autodiff import AutoDiff
-from autodiff import Node
+from autodiff_NARS import AutoDiff
+from autodiff_NARS import Node
 
 
 class TestAutoDiff:

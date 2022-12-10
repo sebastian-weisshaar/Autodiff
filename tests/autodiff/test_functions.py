@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 sys.path.insert(1, '../src/autodiff')
 from functions import sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, sqrt, exp, log, sigmoid
-from autodiff import Node
+from autodiff_NARS import Node
 
 
 class TestFunction:
