@@ -113,7 +113,7 @@ def arcsin(var):
 
 def arccos(var):
     """
-        Arcos operator returns the arcos of var object.
+        Arccos operator returns the arcos of var object.
 
         Parameters
         ----------
