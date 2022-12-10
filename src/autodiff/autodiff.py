@@ -145,11 +145,9 @@ class AutoDiff:
             adjoints[i] = np.array([input_parameter_xi.adjoint for input_parameter_xi in input_node])
         return adjoints
 
-    def __call__(self, x, method='forward'):
-        if method == 'forward':
-            df = self.df(x)
-        elif method == 'backward':
-            df = self.df(x, method=method)
+    def __call__(self, x, method='forward', seed=None):
+        if method == 'forward' or method == 'backward':
+            df = self.df(x, method=method, seed=seed)
         else:
             raise TypeError("Method supported is either 'forward' or 'backward'")
         return self.f(x), df
@@ -206,7 +204,7 @@ class Node:
             New node resulting from the addition
         """
         if isinstance(other, Node):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = self.value + other.value
             for_deriv = self.for_deriv + other.for_deriv
             back_deriv = {self.name: 1, other.name: 1}
@@ -216,7 +214,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = self.value + other
             for_deriv = self.for_deriv
             back_deriv = {self.name: 1}
@@ -259,7 +257,7 @@ class Node:
             New node resulting from the subtraction
         """
         if isinstance(other, Node):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = self.value - other.value
             for_deriv = self.for_deriv - other.for_deriv
             back_deriv = {self.name: 1, other.name: -1}
@@ -269,7 +267,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = self.value - other
             for_deriv = self.for_deriv
             back_deriv = {self.name: 1}
@@ -297,7 +295,7 @@ class Node:
         """
 
         if isinstance(other, (float, int)):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = other - self.value
             for_deriv = - self.for_deriv
             back_deriv = {self.name: -1}
@@ -324,7 +322,7 @@ class Node:
             New node resulting from the multiplication
         """
         if isinstance(other, Node):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = self.value * other.value
             for_deriv = self.for_deriv * other.value + other.for_deriv * self.value
             back_deriv = {self.name: other.value, other.name: self.value}
@@ -334,7 +332,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = self.value * other
             for_deriv = self.for_deriv * other
             back_deriv = {self.name: other}
@@ -377,7 +375,7 @@ class Node:
             New node resulting from the multiplication
         """
         if isinstance(other, Node):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = self.value ** other.value
             for_deriv = other.value*self.value**(other.value-1)*self.for_deriv + \
                         np.log(self.value)*self.value**other.value*other.for_deriv
@@ -389,7 +387,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = self.value ** other
             for_deriv = other*self.value ** (other-1)*self.for_deriv
             back_deriv = {self.name: other*self.value ** (other-1)}
@@ -402,7 +400,7 @@ class Node:
         return new_node
 
     def __rpow__(self, other):
-        new_name = self.__new_name__()
+        new_name = self._new_name()
         value = other ** self.value
         for_deriv = self.for_deriv * np.log(other) * other ** self.value
         back_deriv = {self.name: np.log(other) * other ** self.value}
@@ -427,7 +425,7 @@ class Node:
             New node resulting from the division
         """
         if isinstance(other, Node):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = self.value / other.value
             for_deriv = (self.for_deriv * other.value - self.value * other.for_deriv) / (other.value * other.value)
             back_deriv = {self.name: 1 / other.value, other.name: -self.value / (other.value * other.value)}
@@ -437,7 +435,7 @@ class Node:
             other.child.append(new_node)
 
         elif isinstance(other, (float, int)):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = self.value / other
             for_deriv = self.for_deriv / other
             back_deriv = {self.name: 1/other}
@@ -464,7 +462,7 @@ class Node:
             New node resulting from the division
         """
         if isinstance(other, (float, int)):
-            new_name = self.__new_name__()
+            new_name = self._new_name()
             value = other / self.value
             for_deriv = -other / (self.value * self.value)
             back_deriv = {self.name: -other / (self.value * self.value)}
@@ -476,7 +474,7 @@ class Node:
         self.child.append(new_node)
         return new_node
 
-    def __new_name__(self):
+    def _new_name(self):
         """
         Compute the name of the new node
         Return
