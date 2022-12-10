@@ -25,13 +25,9 @@ jobs:
       - name: Install Python dependencies
         run: pip install pytest pytest-cov numpy
       - name: Change into test folder
-        run: cd tests
+        run: (cd tests && ./run_test.sh 'coverage')
       - name: Test coverage of 90%
         run: pytest --cov=src/autodiff --cov-fail-under=90 --cov-report html:cov_html
-      - name: Check for files
-        run: ls -al
-      - name: Check for files in test
-        run: ls -al ./tests/
       - name: Clean .gitignore in coverage output
         run: rm -f cov_html/.gitignore
 
