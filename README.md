@@ -9,8 +9,7 @@
 
 **An automatic differentiation package implementing forward and reverse mode**.
 
-Please refer to `docs/documentation.ipynb` for more details.
-
+Please refer to the [documentation](https://code.harvard.edu/CS107/team19/blob/main/docs/documentation.ipynb) for more details.
 
 | Group Members       | Emails                              |
 |---------------------|-------------------------------------|
@@ -27,6 +26,14 @@ To install from pip:
 ```Python
 pip install -i https://test.pypi.org/simple/autodiff-NARS
 ```
+
+# Uninstall 
+How to uninstall:
+
+```Python
+pip uninstall autodiff-NARS
+```
+
 # Supported Elementary Operations
 
 | Elementary Operation | Example |
