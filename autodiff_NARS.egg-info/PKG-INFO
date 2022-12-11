@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
-Name: autodiff_NARS
-Version: 0.1.2
+Name: autodiff-NARS
+Version: 0.1.4
 Summary: The purpose of this package is to provide the user with methods to undergo automatic differentiation of both univariate and multivariate functions using either forward or reverse mode.
 Author-email: Anna Midgley <amidgley@g.harvard.edu>, Nora Hallqvist <nhallqvisthellstadius@g.harvard.edu>, Sebastian Weisshaar <sweisshaar@g.harvard.edu>, Robin Robinson <robin_robinson@college.harvard.edu>
 Project-URL: Course Team Github Page, https://code.harvard.edu/CS107/team19

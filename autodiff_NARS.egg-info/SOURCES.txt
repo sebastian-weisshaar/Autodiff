@@ -1,6 +1,9 @@
 LICENSE
 README.md
 pyproject.toml
+autodiff_NARS/__init__.py
+autodiff_NARS/autodiff.py
+autodiff_NARS/functions.py
 autodiff_NARS.egg-info/PKG-INFO
 autodiff_NARS.egg-info/SOURCES.txt
 autodiff_NARS.egg-info/dependency_links.txt

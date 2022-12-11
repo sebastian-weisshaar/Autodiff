@@ -1,7 +1,7 @@
 import copy
 import random
-import numpy as np
 from typing import Union, Callable
+import numpy as np
 
 
 class AutoDiff:
