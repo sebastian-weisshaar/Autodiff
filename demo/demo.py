@@ -1,5 +1,6 @@
 from autodiff_NARS import autodiff as AD
 from autodiff_NARS.functions import log, sin, sinh, exp
+import numpy as np
 
 
 print("SCENARIO 1: Single (callable) Function + Scalar Input")
@@ -89,3 +90,60 @@ print(df_backward)
 
 print("\n")
 
+print("Newton's Method Implementation 1: Scalar Function")
+
+# function to find the root of
+def f(x):
+    return x**2 -3
+
+ad = AD.AutoDiff(f) 
+
+# Newtons method
+def newton(x0, max_iter=10000,tol=1e-6):
+    x=x0
+
+    for i in range(max_iter):
+
+        x -= ad.f(x)/ad.df(x)
+
+        if np.abs(ad.f(x)) < tol: 
+            return x
+
+    return False
+
+sol = newton(10)
+print(sol)
+
+
+
+print("\n")
+
+print("Newton's Method Implementation 1: Scalar Function")
+
+def f1(x):
+    return (x[0]**2)*(x[1]**3) - x[0]*x[1]**3-1
+
+def f2(x):
+    return (x[0]**3) - x[0]*x[1]**3-4
+
+
+ad = AD.AutoDiff([f1,f2])
+
+def newton(x0, max_iter=10000,tol=1e-6):
+    x=x0
+
+    for i in range(max_iter):
+
+        f, df = ad(x)
+
+        x -= np.linalg.multi_dot([np.linalg.inv(df),f])
+
+        if np.linalg.norm(ad.f(x)) < tol: 
+            return x
+
+    return False
+
+sol = newton([1,1])
+print(sol)
+
+print("\n")
