@@ -133,8 +133,8 @@ Given the multivariate function:
 
 $$f(\boldsymbol{x})=\begin{bmatrix}
 \log(x_1) + \sin(x_2) + x_3\\ 
-\sinh(x_1)*\exp(x_2) - x_3\\ 
-x_1*\sin(x_2)/x_3
+\sinh(x_1)* \exp(x_2) - x_3\\ 
+x_1* \frac{\sin(x_2)}{x_3}
 \end{bmatrix}$$
 
 We demonstrate how to find the function value, Jacobian using reverse mode, and the partial derivative of $\frac{\partial f}{\partial x_1}$ using forward mode at point $x =[1,3,5]$ .
