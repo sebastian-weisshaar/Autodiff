@@ -15,7 +15,7 @@ Please refer to `docs/documentation.ipynb` for more details.
 | Group Members       | Emails                              |
 |---------------------|-------------------------------------|
 | Nora Hallqvist      | nhallqvisthellstadius@g.harvard.edu |
-| Robin Robinson      | robin_robinson@college.harvard.edu        |
+| Robin Robinson      | robin_robinson@college.harvard.edu  |
 | Anna Midgley        | amidgley@g.harvard.edu              |
 | Sebastian Weisshaar | sweisshaar@g.harvard.edu            |
 
@@ -25,7 +25,7 @@ Please refer to `docs/documentation.ipynb` for more details.
 To install from pip:
 
 ```Python
-pip install autodiff-NARS
+pip install -i https://test.pypi.org/simple/autodiff-NARS
 ```
 # Supported Elementary Operations
 
@@ -67,8 +67,8 @@ $$f(x) = \log(x) + \sin(x)$$
 We demonstrate how to calculate the function value and derivative using both forward and backward mode at $x=1$.
 
 ```Python
-import autodiff as AD
-from functions import sin,log
+from autodiff_NARS import autodiff as AD
+from autodiff_NARS.functions import sin,log
 
 def f(x):
     return log(x) + sin(x)
@@ -98,8 +98,8 @@ In order to obtain the partial derivative (or direction derivative), the user mu
 
 
 ```Python
-import autodiff as AD
-from functions import sin,log
+from autodiff_NARS import autodiff as AD
+from autodiff_NARS.functions import sin,log
 
 def f(x):
     return log(x[0]) + sin(x[1]) + x[2]
@@ -135,8 +135,8 @@ We demonstrate how to find the function value, Jacobian using reverse mode, and 
 To create a multivariate function, the user must first define the individual functions and place them in a list. 
 
 ```Python
-import autodiff as AD
-from functions import sin,log, sinh, exp
+from autodiff_NARS import autodiff as AD
+from autodiff_NARS.functions import sin,log, sinh, exp
 
 def f1(x):
     return log(x[0]) + sin(x[1]) + x[2]
