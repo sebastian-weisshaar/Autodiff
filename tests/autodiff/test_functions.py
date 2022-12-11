@@ -1,9 +1,9 @@
 import sys
 import pytest
 import numpy as np
-sys.path.insert(1, '../autodiff_NARS')
-from functions import sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, sqrt, exp, log, sigmoid
-from autodiff import Node
+sys.path.insert(1, '../')
+from autodiff_NARS.functions import sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, sqrt, exp, log, sigmoid
+from autodiff_NARS.autodiff import Node
 
 
 class TestFunction:
