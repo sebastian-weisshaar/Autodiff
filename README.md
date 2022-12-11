@@ -26,6 +26,14 @@ To install from pip:
 ```Python
 pip install -i https://test.pypi.org/simple/autodiff-NARS
 ```
+
+# Uninstall 
+How to uninstall:
+
+```Python
+pip uninstall autodiff-NARS
+```
+
 # Supported Elementary Operations
 
 | Elementary Operation | Example |
