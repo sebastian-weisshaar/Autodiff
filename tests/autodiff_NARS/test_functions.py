@@ -5,7 +5,6 @@ sys.path.insert(1, '../')
 from autodiff_NARS.functions import sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, sqrt, exp, log, sigmoid
 from autodiff_NARS.autodiff import Node
 
-
 class TestFunction:
     """ Class to test functions in functions.py"""
     def create_node(self, value_range=[-100, 100]):
