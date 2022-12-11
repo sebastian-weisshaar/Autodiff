@@ -4,9 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autodiff_NARS"
-version = "0.1.2"
+version = "0.1.4"
 authors = [
-  {name="Anna Midgley", email="amidgley@g.harvard.edu" }, {name="Nora Hallqvist", email="nhallqvisthellstadius@g.harvard.edu" },{name="Sebastian Weisshaar", email="sweisshaar@g.harvard.edu" }, {name="Robin Robinson", email="robin_robinson@college.harvard.edu" },
+  {name="Anna Midgley", email="amidgley@g.harvard.edu" }, 
+  {name="Nora Hallqvist", email="nhallqvisthellstadius@g.harvard.edu" },
+  {name="Sebastian Weisshaar", email="sweisshaar@g.harvard.edu" }, 
+  {name="Robin Robinson", email="robin_robinson@college.harvard.edu" },
 ]
 description = "The purpose of this package is to provide the user with methods to undergo automatic differentiation of both univariate and multivariate functions using either forward or reverse mode."
 readme = "README.md"
@@ -18,7 +21,7 @@ classifiers = [
 ]
 
 [tool.setuptools]
-py-modules = ['autodiff_NARS']
+packages = ["autodiff_NARS"]
 
 [project.urls]
 "Course Team Github Page" = "https://code.harvard.edu/CS107/team19"

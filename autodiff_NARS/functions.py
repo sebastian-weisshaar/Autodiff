@@ -1,5 +1,5 @@
 import numpy as np
-from autodiff import Node
+from .autodiff import Node
 
 
 def sin(var):
