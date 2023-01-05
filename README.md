@@ -2,7 +2,7 @@
 ## workflow status
 ![example workflow](https://github.com/sebastian-weisshaar/Autodiff/actions/workflows/main.yml/badge.svg)
 
-[![coverage](https://code.harvard.edu/CS107/team19/actions/workflows/coverage.yml/badge.svg)](https://code.harvard.edu/CS107/team19/actions/workflows/coverage.yml)
+[![coverage](https://github.com/sebastian-weisshaar/Autodiff/actions/workflows/coverage.yml/badge.svg)](https://github.com/sebastian-weisshaar/Autodiff/actions/workflows/coverage.yml)
 
 
 # autodiff-NARS
