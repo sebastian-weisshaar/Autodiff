@@ -13,9 +13,9 @@ Please refer to the [documentation](https://code.harvard.edu/CS107/team19/blob/m
 
 | Group Members       | Emails                              |
 |---------------------|-------------------------------------|
-| Nora Hallqvist      | nhallqvisthellstadius@g.harvard.edu |
-| Robin Robinson      | robin_robinson@college.harvard.edu  |
-| Anna Midgley        | amidgley@g.harvard.edu              |
+| Nora Hallqvist      | #####@g.harvard.edu |
+| Robin Robinson      | #####@college.harvard.edu  |
+| Anna Midgley        | #####@g.harvard.edu              |
 | Sebastian Weisshaar | sweisshaar@g.harvard.edu            |
 
 
