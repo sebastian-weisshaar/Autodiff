@@ -1,6 +1,6 @@
 
 ## workflow status
-[![test](https://code.harvard.edu/CS107/team19/actions/workflows/test.yml/badge.svg)](https://code.harvard.edu/CS107/team19/actions/workflows/test.yml)
+![example workflow](https://github.com/sebastian-weisshaar/Autodiff/actions/workflows/main.yml/badge.svg)
 
 [![coverage](https://code.harvard.edu/CS107/team19/actions/workflows/coverage.yml/badge.svg)](https://code.harvard.edu/CS107/team19/actions/workflows/coverage.yml)
 
