@@ -1,6 +1,6 @@
 
 ## workflow status
-![example workflow](https://github.com/sebastian-weisshaar/Autodiff/actions/workflows/main.yml/badge.svg)
+[![test](https://github.com/sebastian-weisshaar/Autodiff/actions/workflows/test.yml/badge.svg)](https://github.com/sebastian-weisshaar/Autodiff/actions/workflows/test.yml)
 
 [![coverage](https://github.com/sebastian-weisshaar/Autodiff/actions/workflows/coverage.yml/badge.svg)](https://github.com/sebastian-weisshaar/Autodiff/actions/workflows/coverage.yml)
 
